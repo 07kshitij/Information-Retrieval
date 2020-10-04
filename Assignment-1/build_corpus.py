@@ -19,6 +19,7 @@
 # 3906 {'Date': 'July 28, 2020', 'Participants': []} -- No spaces
 # 4508 {'Date': 'July 7, 2020', 'Participants': []} -- inside span
 
+
 import os
 import re
 import json
@@ -78,6 +79,7 @@ def populate_participants(soup, data_dict):
     # paragraphs = soup.find_all('p', {'class': 'p'})
     paragraphs = soup.find_all('p')
 
+    # Mark the starting index for the next task
     last_participant_pos = 0
 
     for idx in range(len(paragraphs)):
@@ -100,6 +102,7 @@ def populate_participants(soup, data_dict):
 
 def build_textCorpus(soup, ECTText):
     text = soup.get_text()
+    text = re.sub(u"(\u2018|\u2019)", "'", text)
     ECTText.write(text)
     ECTText.write('\n')
     pass
@@ -110,21 +113,27 @@ def populate_presentations(start, soup, data_dict):
 
     name = ''
 
+    # Start from the ending of participants section (pointed by start)
     for idx in range(start + 1, len(paragraphs)):
         para = paragraphs[idx]
-        if para.has_attr('id'):
+        # Filter start of QnA section
+        if para.has_attr('id'): 
             break
+        # Filter tags like <p></p>
         if len(para.contents) < 1:
             continue
+        # Check if the tag is a name or dialogue 
         try:
             element = para.contents[0].contents
             name = para.text
+            # Currently ignoring tags like <strong><span>Name</span></strong>
             if type(name) != str:
                 break
             if name not in data_dict['Presentations'].keys():
                 data_dict['Presentations'][name] = []
         except AttributeError:
             dialogue = para.contents[0]
+            dialogue = re.sub(u"(\u2018|\u2019)", "'", dialogue)
             if name != '':
                 data_dict['Presentations'][name].append(dialogue)
             pass
@@ -182,3 +191,10 @@ def build_ECTNestedDict():
 
 if __name__ == "__main__":
     build_ECTNestedDict()
+
+# BUGS FIXED
+
+# **** BUG FIX NEEDED ASAP ***
+# 1. Words like I've are written as I\u2019ve in the jsons. Investigate the issue and fix ASAP
+#    Need this working as it impacts tokenization
+#       Sol - \u2019 is unicode for left '. Replace them using regex
