@@ -21,8 +21,8 @@
 
 import os
 import re
+import json
 from bs4 import BeautifulSoup
-from collections import OrderedDict
 
 DATA_PATH = './data/'
 
@@ -30,10 +30,9 @@ files = os.listdir(DATA_PATH)
 files.sort()
 total_files = len(files)
 
-LOG_OUTPUT = True
-data_dict = OrderedDict()
+DEBUG = True
 
-def populate_dates(counter, soup):
+def populate_dates(soup, data_dict):
 
     months = ['January', 'February', 'March', 'April', 'May', 'June',
               'July', 'August', 'September', 'October', 'November', 'December']
@@ -51,72 +50,135 @@ def populate_dates(counter, soup):
                 result = re.search(pattern, para)
                 if result:
                     found = True
-                    data_dict[counter]['Date'] = result.group(0)
-                    assert data_dict[counter]['Date'] in para
+                    data_dict['Date'] = result.group(0)
+                    assert data_dict['Date'] in para
                     break
         if found:
             break
 
-def add_participant_category(pos, paragraphs, counter):
+def add_participant_category(pos, paragraphs, data_dict):
+    new_added = 0
     for idx in range(pos + 1, len(paragraphs)):
         text = paragraphs[idx].text
         text = text.replace('–', '-')
         if '-' in text:
             name = text.split('-')[0].strip()
             if len(name) <= 100:
-                data_dict[counter]['Participants'].append(name)
+                data_dict['Participants'].append(name)
+                new_added = new_added + 1
         else:
             break
+    return new_added
 
 # To-do: Some files have nested tags for the category. Fix it
 
-def populate_participants(counter, soup):
+def populate_participants(soup, data_dict):
 
-    data_dict[counter]['Participants'] = []
-    paragraphs = soup.find_all('p', {'class': 'p'})
+    data_dict['Participants'] = []
+    # paragraphs = soup.find_all('p', {'class': 'p'})
+    paragraphs = soup.find_all('p')
+
+    last_participant_pos = 0
 
     for idx in range(len(paragraphs)):
         text = paragraphs[idx].text.strip()
     
         if text.lower() == 'company participants':
-            add_participant_category(idx, paragraphs, counter)
+            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
         if text.lower() == 'conference call participants':
-            add_participant_category(idx, paragraphs, counter)
+            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
         if text.lower() == 'corporate participants':
-            add_participant_category(idx, paragraphs, counter)
+            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
         if text.lower() == 'company representatives':
-            add_participant_category(idx, paragraphs, counter)
+            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
         if text.lower() == 'executives':
-            add_participant_category(idx, paragraphs, counter)
+            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
         if text.lower() == 'analysts':
-            add_participant_category(idx, paragraphs, counter)
+            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
 
-def build_corpus():
+    return last_participant_pos
 
-    for cnt in range(total_files):
-        data_dict[cnt] = {}
+def build_textCorpus(soup, ECTText):
+    text = soup.get_text()
+    ECTText.write(text)
+    ECTText.write('\n')
+    pass
+
+def populate_presentations(start, soup, data_dict):
+    data_dict['Presentations'] = {}
+    paragraphs = soup.find_all('p')
+
+    name = ''
+
+    for idx in range(start + 1, len(paragraphs)):
+        para = paragraphs[idx]
+        if para.has_attr('id'):
+            break
+        if len(para.contents) < 1:
+            continue
+        try:
+            element = para.contents[0].contents
+            name = para.text
+            if type(name) != str:
+                break
+            if name not in data_dict['Presentations'].keys():
+                data_dict['Presentations'][name] = []
+        except AttributeError:
+            dialogue = para.contents[0]
+            if name != '':
+                data_dict['Presentations'][name].append(dialogue)
+            pass
+
+        # if len(para.contents[0].contents):
+        #     # Name of presenter
+        #     name = para.contents[0].contents
+        #     if name not in data_dict['Presentations'].keys():
+        #         data_dict['Presentations'][name] = []
+        # else:
+        #     content = para.contents
+        #     data_dict['Presentations'][name]
+        #     pass            
+
+def build_ECTNestedDict():
+
+    # for cnt in range(total_files):
+    #     data_dict[cnt] = {}
+
+    ECTText = open('ECTText.txt', 'w')
 
     iterations = 0
 
+    if not os.path.exists('ECTNestedDict'):
+        os.makedirs('ECTNestedDict')
+
     for file in files:
+        data_dict = {}
         abs_path = os.path.abspath(os.path.join(DATA_PATH, file))
         soup = BeautifulSoup(open(abs_path), "html.parser")
         counter = re.match(r'[0-9]{1,4}', file).group(0)
         counter = (int)(counter)
 
-        populate_dates(counter, soup)
-        populate_participants(counter, soup)
+        # print(counter)
+
+        build_textCorpus(soup, ECTText)
+        populate_dates(soup, data_dict)
+        last_participant_pos = populate_participants(soup, data_dict)
+        populate_presentations(last_participant_pos, soup, data_dict)
+
+        out_file = os.path.join('ECTNestedDict', os.path.splitext(file)[0] + '.json')
+
+        with open(out_file, 'w') as outFile:
+            json.dump(data_dict, outFile)
 
         iterations = iterations + 1
-        if LOG_OUTPUT and iterations % 100 == 0:
-            print('Steps done: {}'.format(iterations))
+        if DEBUG and iterations % 100 == 0:
+            print('ECTNestedDict - Steps done: {}'.format(iterations))
 
-    if LOG_OUTPUT:
-        for key, value in data_dict.items():
-            if 'Participants' in value.keys() and len(value['Participants']) == 0:
-                print(key, value)
-            elif not ('Participants' in value.keys()):
-                print(key, value)
+        # if DEBUG:
+        #     print(counter)
+        #     print(data_dict)
+
+        # break
 
 if __name__ == "__main__":
-    build_corpus()
+    build_ECTNestedDict()
