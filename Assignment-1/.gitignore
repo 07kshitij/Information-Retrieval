@@ -2,3 +2,4 @@ data/
 info_ret/
 ECTText.txt
 ECTNestedDict/
+*.json

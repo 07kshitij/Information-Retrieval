@@ -66,20 +66,23 @@ def prepare_inverted_index():
         counter = re.match(r'[0-9]{1,4}', file).group(0)
         counter = (int)(counter)
 
+        text = text.split(' ')
+
         for pos in range(len(text)):
             word = text[pos]
+            # print(word)
             if word in tokens:
                 if word not in inverted_index.keys():
-                    inverted_index[word] = []
-                inverted_index[word].append((counter, pos))
+                    inverted_index[word] = {}
+                if counter not in inverted_index[word].keys():
+                    inverted_index[word][counter] = []
+                inverted_index[word][counter].append(pos)
         iterations = iterations + 1
         if DEBUG and iterations % 100 == 0:
             print('Inverted Index - Steps done: {}'.format(iterations))
 
     with open('inverted_index.json', 'w') as inv_idx:
         json.dump(inverted_index, inv_idx)
-
-    pass
 
 if __name__ == "__main__":
     # get_tokens()

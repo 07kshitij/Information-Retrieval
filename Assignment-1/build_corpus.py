@@ -24,6 +24,7 @@ import os
 import re
 import json
 from bs4 import BeautifulSoup
+import string
 
 DATA_PATH = './data/'
 
@@ -126,9 +127,12 @@ def populate_presentations(start, soup, data_dict):
         try:
             element = para.contents[0].contents
             name = para.text
+            if name == 'Question-and-Answer Session':
+                break
             # Currently ignoring tags like <strong><span>Name</span></strong>
             if type(name) != str:
                 break
+            name = re.sub(u"(\u2018|\u2019)", "'", name)
             if name not in data_dict['Presentations'].keys():
                 data_dict['Presentations'][name] = []
         except AttributeError:
@@ -138,22 +142,66 @@ def populate_presentations(start, soup, data_dict):
                 data_dict['Presentations'][name].append(dialogue)
             pass
 
-        # if len(para.contents[0].contents):
-        #     # Name of presenter
-        #     name = para.contents[0].contents
-        #     if name not in data_dict['Presentations'].keys():
-        #         data_dict['Presentations'][name] = []
-        # else:
-        #     content = para.contents
-        #     data_dict['Presentations'][name]
-        #     pass            
+def search_text(soup, data_dict, counter):
+    return
+
+def build_questionnaire(soup, data_dict):
+    data_dict['Questionnaire'] = {}
+    paragraphs = soup.find_all('p')
+
+    found = False
+
+    for idx in range(len(paragraphs)):
+        para = paragraphs[idx]
+        if para.has_attr('id'):
+            if para['id'] == 'question-answer-session':
+                found = True
+                count = 0
+                name = ''
+                last_name = ''
+                for pos in range(idx + 1, len(paragraphs)):
+                    para = paragraphs[pos]
+                    if len(para.contents) < 1:
+                        continue
+                    pass
+                    try:
+                        element = para.contents[0].content
+                        name = para.text
+                        if type(name) != str:
+                            name = para.contents[0].text
+                            if type(name) != str:
+                                break
+                            if name[0:3] == 'Q -':
+                                name = name[3:]
+                        else:
+                            if name[0:3] == 'Q -':
+                                name = name[3:]
+                        name = name.strip()
+                    except AttributeError:
+                        response = para.contents[0]
+                        response = re.sub(u"(\u2018|\u2019)", "'", response)
+                        if name != '':
+                            if name != last_name:
+                                data_dict['Questionnaire'][count] = {}
+                                data_dict['Questionnaire'][count]['Speaker'] = str(name)
+                                data_dict['Questionnaire'][count]['Remark'] = str(response)
+                                count = count + 1
+                            else:
+                                prev = data_dict['Questionnaire'][count - 1]['Remark']
+                                data_dict['Questionnaire'][count - 1]['Remark'] = prev + str(response)
+                            last_name = name
+        if found:
+            break
+
+    if not found:
+        return            
 
 def build_ECTNestedDict():
 
     # for cnt in range(total_files):
     #     data_dict[cnt] = {}
 
-    ECTText = open('ECTText.txt', 'w')
+    # ECTText = open('ECTText.txt', 'w')
 
     iterations = 0
 
@@ -169,10 +217,11 @@ def build_ECTNestedDict():
 
         # print(counter)
 
-        build_textCorpus(soup, ECTText)
+        # build_textCorpus(soup, ECTText)
         populate_dates(soup, data_dict)
         last_participant_pos = populate_participants(soup, data_dict)
         populate_presentations(last_participant_pos, soup, data_dict)
+        build_questionnaire(soup, data_dict)
 
         out_file = os.path.join('ECTNestedDict', os.path.splitext(file)[0] + '.json')
 
@@ -184,8 +233,7 @@ def build_ECTNestedDict():
             print('ECTNestedDict - Steps done: {}'.format(iterations))
 
         # if DEBUG:
-        #     print(counter)
-        #     print(data_dict)
+        #     print(counter, data_dict)
 
         # break
 
@@ -195,6 +243,6 @@ if __name__ == "__main__":
 # BUGS FIXED
 
 # **** BUG FIX NEEDED ASAP ***
-# 1. Words like I've are written as I\u2019ve in the jsons. Investigate the issue and fix ASAP
+# 1. Words like I've are written as I\u2019ve in the json. Investigate the issue and fix ASAP
 #    Need this working as it impacts tokenization
 #       Sol - \u2019 is unicode for left '. Replace them using regex
