@@ -1,30 +1,9 @@
-# --- TO FIX ---
-
-#  -- No file --
-# 1260 {} Not present
-# 1659 {} -- Ignore (Invalid date)
-# 2130 {} Not present
-# 2220 {} Not present
-# 3687 {} -- Ignore (Invalid date)
-# 4711 {} Not present
-# 4712 {} Not present
-
-# -- Repeated files --
-# [3872, 3873, 3874, 3875, 3876]
-
-# -- No participants --
-# 719 {'Date': 'August 17, 2020', 'Participants': []} -- inside span
-# 1663 {'Date': 'August 5, 2020', 'Participants': []} -- No participant
-# 2707 {'Date': 'August 4, 2020', 'Participants': []} -- inside span
-# 3906 {'Date': 'July 28, 2020', 'Participants': []} -- No spaces
-# 4508 {'Date': 'July 7, 2020', 'Participants': []} -- inside span
-
-
 import os
 import re
 import json
-from bs4 import BeautifulSoup
+import copy
 import string
+from bs4 import BeautifulSoup
 
 DATA_PATH = './data/'
 
@@ -33,6 +12,16 @@ files.sort()
 total_files = len(files)
 
 DEBUG = True
+
+def replace_unicode(response):
+    response = re.sub(u"(\u2018|\u2019)", "'", response)
+    response = re.sub(u"(\u2013|\u2014)", "-", response)
+    response = re.sub(u"(\u2026)", "...", response)
+    response = re.sub(u"(\u00e4)", "a", response)
+    response = re.sub(u"(\u20ac)", "Euro ", response)
+    response = re.sub(u"(\u00e9)", "e", response)
+    response = re.sub(u"(\u00fc)", "u", response)
+    return response
 
 def populate_dates(soup, data_dict):
 
@@ -61,11 +50,19 @@ def populate_dates(soup, data_dict):
 def add_participant_category(pos, paragraphs, data_dict):
     new_added = 0
     for idx in range(pos + 1, len(paragraphs)):
-        text = paragraphs[idx].text
+        text = ''
+        try:
+            element = paragraphs[idx].contents[0].contents[0] # Check for elements inside span
+            text = str(element)
+        except AttributeError:
+            text = paragraphs[idx].get_text()
+        if text == " ":
+            continue
         text = text.replace('–', '-')
         if '-' in text:
             name = text.split('-')[0].strip()
             if len(name) <= 100:
+                name = replace_unicode(name)
                 data_dict['Participants'].append(name)
                 new_added = new_added + 1
         else:
@@ -84,124 +81,154 @@ def populate_participants(soup, data_dict):
     last_participant_pos = 0
 
     for idx in range(len(paragraphs)):
-        text = paragraphs[idx].text.strip()
+        text = paragraphs[idx].text
+        if type(text) != str:   # span tag exists
+            text = paragraphs[idx].contents[0].text.strip()
+        else:
+            text = text.strip()
     
-        if text.lower() == 'company participants':
+        text = text.lower()
+
+        if text == 'company participants':
             last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
-        if text.lower() == 'conference call participants':
+        if text == 'conference call participants':
             last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
-        if text.lower() == 'corporate participants':
+        if text == 'corporate participants':
             last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
-        if text.lower() == 'company representatives':
+        if text == 'company representatives':
             last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
-        if text.lower() == 'executives':
+        if text == 'executives':
             last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
-        if text.lower() == 'analysts':
+        if text == 'analysts':
             last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
+
 
     return last_participant_pos
 
 def build_textCorpus(soup, ECTText):
     text = soup.get_text()
-    text = re.sub(u"(\u2018|\u2019)", "'", text)
+    text = replace_unicode(text)
     ECTText.write(text)
     ECTText.write('\n')
     pass
 
-def populate_presentations(start, soup, data_dict):
+def populate_presentations(start, soup, data_dict, counter):
     data_dict['Presentations'] = {}
     paragraphs = soup.find_all('p')
 
     name = ''
+    nested_name = ''
+    taking_inline = True
+    taking_nested = False
 
     # Start from the ending of participants section (pointed by start)
     for idx in range(start + 1, len(paragraphs)):
         para = paragraphs[idx]
-        # Filter start of QnA section
-        if para.has_attr('id'): 
+        if para.has_attr('id'):                                # Filter start of QnA section
             break
-        # Filter tags like <p></p>
-        if len(para.contents) < 1:
+        if para.text == 'Question-and-Answer Session':         # Filter start of QnA section
+            break
+        if len(para.contents) < 1:                             # Filter tags like <p></p>
             continue
         # Check if the tag is a name or dialogue 
         try:
-            element = para.contents[0].contents
+            # print(counter, para)
+            element = para.contents[0].contents[0]
             name = para.text
             if name == 'Question-and-Answer Session':
                 break
-            # Currently ignoring tags like <strong><span>Name</span></strong>
-            if type(name) != str:
-                break
-            name = re.sub(u"(\u2018|\u2019)", "'", name)
-            if name not in data_dict['Presentations'].keys():
+            try:
+                element = element.contents[0]
+                nested_name = str(element)
+                nested_name = replace_unicode(nested_name)
+                taking_inline = False
+                taking_nested = True
+                if nested_name not in data_dict['Presentations'].keys():
+                    data_dict['Presentations'][nested_name] = []
+            except AttributeError:
+                dialogue = para.contents[0].contents[0]
+                dialogue = replace_unicode(dialogue)
+                if nested_name != '' and dialogue != " " and taking_nested:
+                    data_dict['Presentations'][nested_name].append(dialogue)
+            name = replace_unicode(name)
+            if name not in data_dict['Presentations'].keys() and taking_inline:
                 data_dict['Presentations'][name] = []
+                taking_nested = False
         except AttributeError:
             dialogue = para.contents[0]
-            dialogue = re.sub(u"(\u2018|\u2019)", "'", dialogue)
-            if name != '':
+            dialogue = replace_unicode(dialogue)
+            if name != '' and dialogue != " " and taking_inline:
                 data_dict['Presentations'][name].append(dialogue)
-            pass
+        except IndexError:
+            continue
 
 def search_text(soup, data_dict, counter):
     return
 
-def build_questionnaire(soup, data_dict):
+def build_questionnaire(soup, data_dict, counter, participants):
     data_dict['Questionnaire'] = {}
-    paragraphs = soup.find_all('p')
+    paragraphs = soup.find_all('strong')
 
-    found = False
+    # Add anonymous names
+    participants.append('Operator')
+    participants.append('operator')
+    participants.append('Unidentified Analyst')
+    participants.append('Unidentified Company Representative')
 
-    for idx in range(len(paragraphs)):
-        para = paragraphs[idx]
-        if para.has_attr('id'):
-            if para['id'] == 'question-answer-session':
-                found = True
-                count = 0
-                name = ''
-                last_name = ''
-                for pos in range(idx + 1, len(paragraphs)):
-                    para = paragraphs[pos]
-                    if len(para.contents) < 1:
-                        continue
-                    pass
-                    try:
-                        element = para.contents[0].content
-                        name = para.text
-                        if type(name) != str:
-                            name = para.contents[0].text
-                            if type(name) != str:
-                                break
-                            if name[0:3] == 'Q -':
-                                name = name[3:]
-                        else:
-                            if name[0:3] == 'Q -':
-                                name = name[3:]
-                        name = name.strip()
-                    except AttributeError:
-                        response = para.contents[0]
-                        response = re.sub(u"(\u2018|\u2019)", "'", response)
-                        if name != '':
-                            if name != last_name:
-                                data_dict['Questionnaire'][count] = {}
-                                data_dict['Questionnaire'][count]['Speaker'] = str(name)
-                                data_dict['Questionnaire'][count]['Remark'] = str(response)
-                                count = count + 1
-                            else:
-                                prev = data_dict['Questionnaire'][count - 1]['Remark']
-                                data_dict['Questionnaire'][count - 1]['Remark'] = prev + str(response)
-                            last_name = name
-        if found:
-            break
+    qNa_started = False
 
-    if not found:
-        return            
+    position = 0
+
+    for para in paragraphs:
+        name = para.get_text()
+        if 'Question-and' in name or 'Question-' in name:
+            qNa_started = True
+            continue
+
+        if not qNa_started:
+            continue
+
+        person = ""
+        if name in participants:
+            person = name
+        elif len(name.split('-')) > 1:
+            splits = name.split('-')
+            splits[0] = splits[0].strip()
+            splits[1] = splits[1].strip()
+            if splits[0] in participants:
+                person = splits[0]
+            elif splits[1] in participants:
+                person = splits[1]
+        person = person.strip()
+        if person == "" or person == " " or name == None:
+            continue
+
+        para_parent = para.parent
+        response = ""
+
+        for sibling in para_parent.next_siblings:
+            if sibling.name == None:
+                continue
+            children = sibling.find_all('strong', recursive=False)
+            if sibling.get_text() == " ":
+                continue
+            if len(children):
+                break
+            response += str(sibling.get_text())
+
+        person = replace_unicode(person)
+        response = replace_unicode(response)    
+
+        data_dict['Questionnaire'][position] = {
+            'Speaker': person,
+            'Remark': response
+        }
+
+        position += 1
 
 def build_ECTNestedDict():
 
-    # for cnt in range(total_files):
-    #     data_dict[cnt] = {}
-
-    # ECTText = open('ECTText.txt', 'w')
+    ECTText = open('ECTText.txt', 'w')
 
     iterations = 0
 
@@ -215,13 +242,12 @@ def build_ECTNestedDict():
         counter = re.match(r'[0-9]{1,4}', file).group(0)
         counter = (int)(counter)
 
-        # print(counter)
-
-        # build_textCorpus(soup, ECTText)
+        build_textCorpus(soup, ECTText)
         populate_dates(soup, data_dict)
         last_participant_pos = populate_participants(soup, data_dict)
-        populate_presentations(last_participant_pos, soup, data_dict)
-        build_questionnaire(soup, data_dict)
+        populate_presentations(last_participant_pos, soup, data_dict, counter)
+        participants = copy.deepcopy(data_dict['Participants'])
+        build_questionnaire(soup, data_dict, counter, participants)
 
         out_file = os.path.join('ECTNestedDict', os.path.splitext(file)[0] + '.json')
 
@@ -234,15 +260,7 @@ def build_ECTNestedDict():
 
         # if DEBUG:
         #     print(counter, data_dict)
-
         # break
 
 if __name__ == "__main__":
     build_ECTNestedDict()
-
-# BUGS FIXED
-
-# **** BUG FIX NEEDED ASAP ***
-# 1. Words like I've are written as I\u2019ve in the json. Investigate the issue and fix ASAP
-#    Need this working as it impacts tokenization
-#       Sol - \u2019 is unicode for left '. Replace them using regex

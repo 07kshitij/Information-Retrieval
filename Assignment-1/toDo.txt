@@ -1,0 +1,20 @@
+# --- TO FIX ---
+
+#  -- No file --
+# 1260 {} Not present
+# 1659 {} -- Ignore (Invalid date)
+# 2130 {} Not present
+# 2220 {} Not present
+# 3687 {} -- Ignore (Invalid date)
+# 4711 {} Not present
+# 4712 {} Not present
+
+# -- Repeated files --
+# [3872, 3873, 3874, 3875, 3876] -- IGNORE
+
+# -- No participants --
+# 719 {'Date': 'August 17, 2020', 'Participants': []} -- inside span -- FIXED
+# 1663 {'Date': 'August 5, 2020', 'Participants': []} -- No participant -- IGNORE
+# 2707 {'Date': 'August 4, 2020', 'Participants': []} -- inside span -- FIXED
+# 3906 {'Date': 'July 28, 2020', 'Participants': []} -- No spaces -- IGNORE
+# 4508 {'Date': 'July 7, 2020', 'Participants': []} -- inside span -- FIXED
