@@ -230,7 +230,7 @@ def build_questionnaire(soup, data_dict, counter, participants):
                 continue
             if len(children):
                 break
-            response += str(sibling.get_text())
+            response += str(sibling.get_text()) + '\n'
 
         person = replace_unicode(person)
         response = replace_unicode(response)

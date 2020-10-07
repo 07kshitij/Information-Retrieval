@@ -11,38 +11,34 @@ DEBUG = True
 DATA_PATH = './ECTText/'
 
 tokens = set()
+inverted_index = dict()
+
 lemmatizer = WordNetLemmatizer()
 stopwords = stopwords.words('english')
-inverted_index = dict()
+
 files = os.listdir(DATA_PATH)
 files.sort()
 
 
 def get_tokens():
     cnt = 0
-
     token_file = open('tokens.txt', 'w')
 
     for file in files:
-        with open(os.path.join(DATA_PATH, file), 'r') as ECTText:
-            text = ECTText.readlines()
-            for line in text:
-                line = line.lower()
-                line = line.replace('\n', '')
-                line_tokens = word_tokenize(line)
-                for token in line_tokens:
-                    # Remove stop words & punctuation marks
-                    if token not in stopwords and token not in string.punctuation:
-                        lemma = lemmatizer.lemmatize(token)
-                        if lemma not in inverted_index.keys():
-                            inverted_index[lemma] = []
-                            tokens.add(lemma)
-                            token_file.write(lemma)
-                            token_file.write('\n')
-                cnt += 1
-                if DEBUG:
-                    if cnt % 1000 == 0:
-                        print("Tokenization - Steps done: {}".format(cnt))
+        with open(os.path.join(DATA_PATH, file), 'r', encoding='utf-8') as ECTText:
+            text = ECTText.read().replace('\n', ' ').lower().strip()
+            for token in word_tokenize(text):
+                # Remove stop words & punctuation marks
+                if token not in stopwords and token not in string.punctuation:
+                    lemma = lemmatizer.lemmatize(token)
+                    if lemma not in inverted_index.keys():
+                        inverted_index[lemma] = []
+                        tokens.add(lemma)
+                        token_file.write(lemma)
+                        token_file.write('\n')
+            cnt += 1
+            if DEBUG and cnt % 100 == 0:
+                print("Tokenization - Steps done: {} | Tokens found: {}".format(cnt, len(tokens)))
         # break
 
     if DEBUG:

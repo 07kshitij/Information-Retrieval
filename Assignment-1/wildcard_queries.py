@@ -78,19 +78,36 @@ def solve_suffix(query):
 def intersect(a, b):
     return list(set(a).intersection(b))
 
+def write_answer(file, query, result):
 
-def get_postings(result):
+    file.write(query + ':')
+    count = 0
+    for post in result:
+        file.write('<{},{}>'.format(post[0], post[1]))
+        count += 1
+        if count != len(result):
+            file.write(',')
+    return
+
+
+def get_postings(result, out_file):
 
     postings = []
 
+    count = 0
     for key in result:
         posting = inverted_index[key]
-        postings.extend(posting)
-
-    return postings
-
+        posting.sort(key=lambda x: (x[0], x[1]))
+        write_answer(out_file, key, posting)
+        count += 1
+        if count != len(result):
+            out_file.write(';')
+    return
 
 def answer_queries():
+
+    out_file = open('RESULTS1_17EC10063.txt', 'w')
+
     with open(query_file, 'r') as f:
         queries = f.readlines()
         for query in queries:
@@ -105,9 +122,9 @@ def answer_queries():
                 result_left = solve_prefix(left)
                 result_right = solve_suffix(right[::-1])
                 result = intersect(result_left, result_right)
-            result = get_postings(result)
-            print(result)
-
+            get_postings(result, out_file)
+            out_file.write('\n')
+    out_file.close()
 
 if __name__ == "__main__":
 
