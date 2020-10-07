@@ -13,6 +13,7 @@ total_files = len(files)
 
 DEBUG = True
 
+
 def replace_unicode(response):
     response = re.sub(u"(\u2018|\u2019)", "'", response)
     response = re.sub(u"(\u2013|\u2014)", "-", response)
@@ -22,6 +23,7 @@ def replace_unicode(response):
     response = re.sub(u"(\u00e9)", "e", response)
     response = re.sub(u"(\u00fc)", "u", response)
     return response
+
 
 def populate_dates(soup, data_dict):
 
@@ -47,12 +49,14 @@ def populate_dates(soup, data_dict):
         if found:
             break
 
+
 def add_participant_category(pos, paragraphs, data_dict):
     new_added = 0
     for idx in range(pos + 1, len(paragraphs)):
         text = ''
         try:
-            element = paragraphs[idx].contents[0].contents[0] # Check for elements inside span
+            # Check for elements inside span
+            element = paragraphs[idx].contents[0].contents[0]
             text = str(element)
         except AttributeError:
             text = paragraphs[idx].get_text()
@@ -71,6 +75,7 @@ def add_participant_category(pos, paragraphs, data_dict):
 
 # To-do: Some files have nested tags for the category. Fix it
 
+
 def populate_participants(soup, data_dict):
 
     data_dict['Participants'] = []
@@ -86,31 +91,30 @@ def populate_participants(soup, data_dict):
             text = paragraphs[idx].contents[0].text.strip()
         else:
             text = text.strip()
-    
+
         text = text.lower()
 
         if text == 'company participants':
-            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
+            last_participant_pos = idx + \
+                add_participant_category(idx, paragraphs, data_dict)
         if text == 'conference call participants':
-            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
+            last_participant_pos = idx + \
+                add_participant_category(idx, paragraphs, data_dict)
         if text == 'corporate participants':
-            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
+            last_participant_pos = idx + \
+                add_participant_category(idx, paragraphs, data_dict)
         if text == 'company representatives':
-            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
+            last_participant_pos = idx + \
+                add_participant_category(idx, paragraphs, data_dict)
         if text == 'executives':
-            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
+            last_participant_pos = idx + \
+                add_participant_category(idx, paragraphs, data_dict)
         if text == 'analysts':
-            last_participant_pos = idx + add_participant_category(idx, paragraphs, data_dict)
-
+            last_participant_pos = idx + \
+                add_participant_category(idx, paragraphs, data_dict)
 
     return last_participant_pos
 
-def build_textCorpus(soup, ECTText):
-    text = soup.get_text()
-    text = replace_unicode(text)
-    ECTText.write(text)
-    ECTText.write('\n')
-    pass
 
 def populate_presentations(start, soup, data_dict, counter):
     data_dict['Presentations'] = {}
@@ -124,13 +128,14 @@ def populate_presentations(start, soup, data_dict, counter):
     # Start from the ending of participants section (pointed by start)
     for idx in range(start + 1, len(paragraphs)):
         para = paragraphs[idx]
-        if para.has_attr('id'):                                # Filter start of QnA section
+        # Filter start of QnA section
+        if para.has_attr('id'):
             break
         if para.text == 'Question-and-Answer Session':         # Filter start of QnA section
             break
         if len(para.contents) < 1:                             # Filter tags like <p></p>
             continue
-        # Check if the tag is a name or dialogue 
+        # Check if the tag is a name or dialogue
         try:
             # print(counter, para)
             element = para.contents[0].contents[0]
@@ -162,8 +167,6 @@ def populate_presentations(start, soup, data_dict, counter):
         except IndexError:
             continue
 
-def search_text(soup, data_dict, counter):
-    return
 
 def build_questionnaire(soup, data_dict, counter, participants):
     data_dict['Questionnaire'] = {}
@@ -217,7 +220,7 @@ def build_questionnaire(soup, data_dict, counter, participants):
             response += str(sibling.get_text())
 
         person = replace_unicode(person)
-        response = replace_unicode(response)    
+        response = replace_unicode(response)
 
         data_dict['Questionnaire'][position] = {
             'Speaker': person,
@@ -225,6 +228,13 @@ def build_questionnaire(soup, data_dict, counter, participants):
         }
 
         position += 1
+
+
+def build_textCorpus(soup, ECTText):
+    text = soup.get_text()
+    ECTText.write(text)
+    ECTText.write('\n')
+
 
 def build_ECTNestedDict():
 
@@ -243,16 +253,18 @@ def build_ECTNestedDict():
         counter = (int)(counter)
 
         build_textCorpus(soup, ECTText)
-        populate_dates(soup, data_dict)
-        last_participant_pos = populate_participants(soup, data_dict)
-        populate_presentations(last_participant_pos, soup, data_dict, counter)
-        participants = copy.deepcopy(data_dict['Participants'])
-        build_questionnaire(soup, data_dict, counter, participants)
+        ECTText.close()
+        # populate_dates(soup, data_dict)
+        # last_participant_pos = populate_participants(soup, data_dict)
+        # populate_presentations(last_participant_pos, soup, data_dict, counter)
+        # participants = copy.deepcopy(data_dict['Participants'])
+        # build_questionnaire(soup, data_dict, counter, participants)
 
-        out_file = os.path.join('ECTNestedDict', os.path.splitext(file)[0] + '.json')
+        # out_file = os.path.join(
+        #     'ECTNestedDict', os.path.splitext(file)[0] + '.json')
 
-        with open(out_file, 'w') as outFile:
-            json.dump(data_dict, outFile)
+        # with open(out_file, 'w') as outFile:
+        #     json.dump(data_dict, outFile)
 
         iterations = iterations + 1
         if DEBUG and iterations % 100 == 0:
@@ -261,6 +273,7 @@ def build_ECTNestedDict():
         # if DEBUG:
         #     print(counter, data_dict)
         # break
+
 
 if __name__ == "__main__":
     build_ECTNestedDict()

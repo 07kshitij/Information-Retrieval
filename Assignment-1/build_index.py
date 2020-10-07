@@ -12,7 +12,7 @@ DATA_PATH = './data/'
 
 tokens = set()
 lemmatizer = WordNetLemmatizer()
-stopwords = set(stopwords.words('english'))
+stopwords = stopwords.words('english')
 inverted_index = dict()
 files = os.listdir(DATA_PATH)
 
@@ -24,7 +24,6 @@ def get_tokens():
     with open('ECTText.txt', 'r') as ECTText:
         text = ECTText.readlines()
         for line in text:
-            # line = line.translate(str.maketrans('', '', string.punctuation))
             line = line.lower()
             line_tokens = word_tokenize(line)
             for token in line_tokens:
@@ -50,13 +49,13 @@ def prepare_inverted_index():
     # Currently merging two files with same initial ids
     iterations = 0
 
-    tokens = set()
+    # tokens = set()
 
-    with open('tokens.txt', 'r') as file:
-        lines = file.readlines()
-        for line in lines:
-            line = line.replace("\n", "")
-            tokens.add(line)
+    # with open('tokens.txt', 'r') as file:
+    #     lines = file.readlines()
+    #     for line in lines:
+    #         line = line.replace("\n", "")
+    #         tokens.add(line)
 
     for file in files:
         data_dict = {}
@@ -72,11 +71,7 @@ def prepare_inverted_index():
             word = text[pos]
             # print(word)
             if word in tokens:
-                if word not in inverted_index.keys():
-                    inverted_index[word] = {}
-                if counter not in inverted_index[word].keys():
-                    inverted_index[word][counter] = []
-                inverted_index[word][counter].append(pos)
+                inverted_index[word].append((counter, pos))
         iterations = iterations + 1
         if DEBUG and iterations % 100 == 0:
             print('Inverted Index - Steps done: {}'.format(iterations))
@@ -85,5 +80,5 @@ def prepare_inverted_index():
         json.dump(inverted_index, inv_idx)
 
 if __name__ == "__main__":
-    # get_tokens()
+    get_tokens()
     prepare_inverted_index()

@@ -231,6 +231,7 @@ demonstrating
 bringing
 market
 domain
+’
 solved
 immediate
 introduced
@@ -677,7 +678,8 @@ five
 os
 targeting
 2025
-'26
+‘
+26
 timeframe
 whole
 entire
@@ -764,7 +766,7 @@ detroit
 largest
 demographic
 developer
-'23
+23
 confidence
 outside
 influence
@@ -2375,7 +2377,6 @@ fine
 granularity
 aspire
 historical
-26
 27
 intermediate
 naples
@@ -3609,7 +3610,6 @@ paribas
 cristian
 nedelcu
 fy
-'20
 9m
 listen-only-mode
 floor
@@ -3638,7 +3638,6 @@ booking
 145
 indication
 unfolds
-'22
 normalized
 disclosing
 €300
@@ -3802,7 +3801,6 @@ prepayment
 enhancing
 rebuild
 presented
-'19
 2.25
 withdrawal
 withdrawn
@@ -4758,7 +4756,6 @@ envisaged
 prepare
 2000
 tata
-23
 co-determination
 2030.
 layout
@@ -5409,6 +5406,7 @@ ltm
 298
 72
 0.71
+'20
 heavier
 dry
 docking
@@ -7066,6 +7064,7 @@ b.
 cmhc
 encumbered
 onward
+'19
 questioning
 ltc
 joe
@@ -7524,7 +7523,6 @@ preferred
 capping
 10.5
 deductible
-'25
 performer
 14th
 indoor
@@ -7597,7 +7595,6 @@ race
 senatorial
 gubernatorial
 cycle-to-cycle
-'17
 retrains
 quantum
 outsize
@@ -7691,10 +7688,9 @@ hurricane
 irma
 dissipate
 repo
-'15/16
+15/16
 tort
 diminish
-'18
 statute
 tougher
 4-year
@@ -8407,6 +8403,8 @@ fruitful
 salesforce
 ar
 300,000.
+'18
+'17
 bos
 non-software
 enjoyed
@@ -8970,6 +8968,7 @@ partway
 fiscally
 tightly
 314
+'22
 materialize
 propensity
 ratable
@@ -10083,6 +10082,7 @@ inaugurated
 e-gaming
 nutshell
 competitiveness
+'23
 €180
 unavoidable
 3500
@@ -13821,7 +13821,6 @@ detrimental
 complicating
 npi
 rationing
-'is
 wile
 shubham
 cliché
@@ -13847,8 +13846,8 @@ perceive
 deplete
 precedes
 judicious
-'look
 v
+shape.
 pinpoint
 degradation
 160
@@ -16849,6 +16848,7 @@ krempa
 brynjelsen
 stickler
 troutman
+silva
 b.riley
 etonpharma.com
 em-100
@@ -17479,7 +17479,6 @@ julie
 rathbun
 drachman
 daniel-adriano
-silva
 carl
 walkey
 umut
@@ -18139,7 +18138,7 @@ coincidentally
 headway
 rulemaking
 airline-to-airline
-o'leary
+leary
 ryanair
 757
 belly
@@ -18773,7 +18772,7 @@ i…
 …rent
 eroding
 frozen
-that's…
+s…
 sub-meter
 enforce
 downloading
@@ -19271,6 +19270,7 @@ radius
 dkk20
 bend
 kilowatt
+'25
 dkk2
 dkk28
 dkk30
@@ -19998,7 +19998,7 @@ trulieve
 tcnnf
 lynn
 ricci
-d'amico
+amico
 partheniou
 deslauriers
 marcella
@@ -20319,7 +20319,6 @@ earmarking
 opening-up
 tactically
 ingrain
-'normal
 birdf
 teri
 mckibbon
@@ -23262,7 +23261,7 @@ recoil
 patent-pending
 tiberius
 jl
-o'connell
+connell
 mosaic
 rioting
 check-the-box
@@ -23622,6 +23621,7 @@ salvo
 gilad
 glick
 basson
+brien
 iasb
 watchpat
 aasm
@@ -23665,7 +23665,7 @@ bureaucratic
 stonex
 snex
 dunaway
-o'connor
+connor
 mollen
 sharma
 www.stonex.com
@@ -26190,7 +26190,6 @@ folder
 12-inch
 purpose-driven
 communication-centric
-'hey
 neptune
 nept
 winkle
@@ -26944,7 +26943,6 @@ counterintuitive
 baratz
 ineligible
 1999
-'16
 274
 unsettling
 rignet
@@ -27993,7 +27991,6 @@ mendelsohn
 pascoe
 spaid
 donald
-connor
 siversky
 jordan
 sadler
@@ -29064,6 +29061,7 @@ ai/ml
 crunching
 ingestion
 ui
+'hey
 correlating
 50x
 ingested
@@ -29663,18 +29661,15 @@ micro-architectural
 rtl
 productization
 seminal
-'912
 reexamination
 supreme
 sk
 hynix
 asserting
-'218
-'595
+595
 rdimm
 lrdimm
 markman
-'523
 self-test
 undeterred
 ddr4
@@ -30472,6 +30467,7 @@ multistage
 ncsm
 hummer
 nipper
+o'leary
 tph
 hallead
 voie
@@ -30678,7 +30674,7 @@ martinrea
 mretf
 9:45
 wildeboer
-d'eramo
+eramo
 di
 tosto
 jaz
@@ -30844,7 +30840,7 @@ dorel-owned
 285.6
 23.6.
 untimely
-'09
+09
 recede
 caput
 learnt
@@ -31087,7 +31083,7 @@ patients…
 undergoes
 rapamycin
 retitering
-isn't…
+t…
 pre-established
 tolerating
 aspu
@@ -32027,9 +32023,9 @@ leno
 abbreviation
 exerting
 non-contracted
-o'regan
 77.6
 one-startup
+o'regan
 hemorrhoid
 co-developing
 undertreated
@@ -33998,7 +33994,6 @@ fliptop
 navigator
 mash
 mapanything
-'what
 remap
 on-salesforce
 nesting
@@ -34038,19 +34033,17 @@ carte
 blanche
 csm
 servicenow
-'oh
-'hold
-'there
+sir.
 spotting
 heads-up
 highspots
 showpad
-'let
 heiman
 challenger
 saleshood
 brainshark
 mindtickle
+quarter.
 gravitas
 pixelworks
 pxlw
@@ -34889,6 +34882,7 @@ odyssey
 hauler
 confer
 announceable
+'oh
 mj
 regenerons
 mm
@@ -35580,6 +35574,7 @@ dyssynergy
 23.733
 3.275
 servi
+oréal
 sibo
 intestinal
 overgrowth
@@ -37457,6 +37452,7 @@ sbic
 under-levered
 argues
 patterning
+'09
 that—on
 235.
 slfs
@@ -38150,7 +38146,6 @@ longwall
 compliantly
 faltered
 brathwaite
-connell
 sank
 zipcode
 leasebacks
@@ -38262,7 +38257,7 @@ cryptic
 decimated
 nissan
 qashqai
-'08-'09
+08-
 deduce
 snack
 ludwig
@@ -38340,8 +38335,6 @@ envoy
 yelling
 downstairs
 dqc
-fy'23
-fy'22
 08:30
 9:33
 avaya
@@ -39410,6 +39403,7 @@ rajvindra
 vijay
 raghavan
 rakesh
+o'connor
 gerra
 cassidy
 mobley
@@ -45522,7 +45516,7 @@ reoffering
 1.656
 1.048
 over-collateralization
-we've-let
+ve-let
 ring-fenced
 iif
 ruffling
@@ -46959,7 +46953,7 @@ cad320
 cad345
 cad45
 cad55
-'20/21
+20/21
 go-to-treat
 upper-end
 right-of-used
@@ -48252,7 +48246,6 @@ exaggerate
 overpromising
 irlbf
 mcdonagh
-o'grady
 diarmaid
 eamonn
 cant
@@ -48288,6 +48281,7 @@ probed
 swat
 ltb
 .and
+o'grady
 non-specialist
 reprieve
 remo
@@ -48654,7 +48648,6 @@ cdm
 baud-rate
 ~40km
 amplifier
-'right
 baud
 osfp
 gbaud
@@ -48843,6 +48836,7 @@ escovar
 somit
 varma
 putumayo
+'16
 warpath
 oriente
 maranon-oriente-putumayo
@@ -51920,7 +51914,6 @@ tcos
 ne-net
 coexisted
 apy
-fy'20
 tarek
 keysites
 enterprise…
@@ -52542,6 +52535,7 @@ store-fulfilled
 1,860
 nonpayroll
 validly
+'26
 161.7
 desirability
 contact-free
@@ -55804,7 +55798,6 @@ dar
 stuewe
 mclee
 kallo
-'prepared
 slaughterhouse
 peptan
 ecoson
@@ -58581,6 +58574,7 @@ kit-of-parts
 in-cap
 franchisee-level
 rekindle
+cull
 drive-thrus
 25-year-old
 keyuf
@@ -59158,7 +59152,9 @@ arrowhead
 flow-negative
 erase
 swett
-kukui'ula
+hara
+kukui
+ula
 alexanderbaldwin.com
 the-stay-at-home
 aikahi
@@ -59892,6 +59888,7 @@ spdr
 327,000
 287,000
 self-mark
+o'connell
 jkw
 rampart
 realnetworks
@@ -60151,7 +60148,7 @@ non-capitalized
 1.025
 out-of-territory
 coeur
-d'alene
+alene
 810,000.
 a-cam
 378,000
@@ -60273,6 +60270,7 @@ intest
 intt
 pelrin
 guerrant
+neill
 www.intest.com
 charismatic
 873,000
@@ -61241,6 +61239,7 @@ tastykake
 tasty
 keebler
 '90s
+d'alene
 810,000
 watchpoint
 univar
@@ -61611,7 +61610,6 @@ innovia
 rheinfelden
 weprint
 so-so
-'on
 meto
 chilling
 culling
@@ -61787,7 +61785,7 @@ txmd
 nichol
 ochsner
 finizio
-d'arecca
+arecca
 halkuff
 krassan
 therapeuticsmd.com
@@ -62685,7 +62683,6 @@ dynalink
 dyna
 undeliberately
 ssrm
-o'kane
 edmunds
 mihaljevic
 parkin
@@ -63340,6 +63337,7 @@ high-strength
 voith
 pulping
 1-mill
+'08-'09
 seep
 glint
 riverdale
@@ -63620,6 +63618,7 @@ kesten
 evaporate
 midtown
 shorebreak
+auberge
 smerf
 rebookings
 sonoma
@@ -64826,6 +64825,7 @@ sabodala
 early-
 multi-drill
 afema
+ivoire
 delya
 samina
 niamienlessa
@@ -65836,7 +65836,6 @@ shitty
 unremarkable
 canoe
 oxydol
-595
 rh3
 deurbanization
 goof
@@ -67648,6 +67647,7 @@ kalmin
 rossouw
 fairclough
 allsop
+o'kane
 broda
 costs/margins
 lower-carbon
@@ -68545,7 +68545,6 @@ naudé
 rudow
 hindlian
 ncino.com
-09
 connectone
 out-dated
 niq
@@ -68560,6 +68559,7 @@ anti-money
 laundering
 co-terminus
 pso
+that's…
 olin
 oln
 varilek
@@ -68653,6 +68653,7 @@ gna
 10.80
 10.30
 10.79
+fy'20
 hev
 interdependent
 re-relocate
@@ -70151,7 +70152,6 @@ earthview
 non-leisure
 set-ups
 assumable
-'it
 cluster-by-cluster
 autograph
 pre-disruption
@@ -70811,7 +70811,6 @@ cad224
 machination
 cad26.09
 cad42.95
-it's…
 ourselves.1
 end-term
 geotech
@@ -71188,7 +71187,7 @@ family-based
 arabia/russia
 sph
 davin
-d'ambrosio
+ambrosio
 stivala
 kuglin
 suburbanpropane.com
@@ -72255,7 +72254,6 @@ wasser
 reverb
 non-mask
 per-active
-'saved
 favoriting
 per-employee
 andq2
@@ -72272,8 +72270,8 @@ non-etsy
 ispot
 d.r
 mid-century
-'ah
 gemstone
+following.
 boho
 poa
 scruncy
@@ -72456,6 +72454,7 @@ mohsenian
 superwoman
 cruelty-free
 first-to-mass
+e.l.f.
 eyeslipsface
 bridal-inspired
 elfcosmetics.com
@@ -72486,7 +72485,6 @@ artistry
 cofounder
 elf.com
 memoir
-e.l.f.
 parabens
 phthalates
 well-made
@@ -73241,7 +73239,6 @@ kraus
 bowe
 gilam
 andersonsinc.com
-'34
 proly
 mcneely
 group-owned
@@ -73552,8 +73549,6 @@ saas-related
 kyocera
 hearables
 hearable
-q4'2020
-q1'2021
 2.1million
 q2revenue
 q2last
@@ -73927,7 +73922,6 @@ pneumonitis
 dual-arm
 dual-cohort
 premedication
-d'angelo
 subsites
 inter-response
 alphamab
@@ -74335,6 +74329,7 @@ co-prescribed
 previously-announced
 resmedians
 matrixcare
+fy'22
 well-published
 vaccinal
 cpaps
@@ -76065,6 +76060,7 @@ cash-up
 utilixation
 hickerson
 probably…
+it's…
 gulfport
 gpor
 antle
@@ -77827,7 +77823,6 @@ readable
 insight…
 transactionable
 contangos
-o'bryan
 hoplamazian
 joan
 bottarini
@@ -78175,6 +78170,7 @@ sub-7
 pension-permanent
 non-ipsl-related
 nvta
+d'angelo
 bendekgey
 nussbaum
 stueland
@@ -78684,6 +78680,7 @@ cohr
 dimarco
 matte
 palatnik
+malley
 diminumus
 uvblade
 ultra-thin
@@ -79255,7 +79252,6 @@ ad-libbing
 1,523
 meps
 light-asset
-'30
 jinkopower
 bpx
 mbd
@@ -79565,7 +79561,7 @@ ofcf
 €415
 €435
 o2
-we're…
+re…
 openreach
 evolving…
 mbit
@@ -79917,7 +79913,6 @@ re-residents
 selfishly
 ibuyers
 socal
-cull
 underwhelmed
 mid-fives
 low-seven
@@ -80047,6 +80042,7 @@ high-levels
 trail-off
 gagnon
 joc
+rourke
 freeland
 america-merrill
 mclellan
@@ -80063,6 +80059,7 @@ plaine
 colonsay
 canpotex
 recced
+'what
 'beyond
 fertilize
 yangtze
@@ -80540,7 +80537,6 @@ heilbronn
 –in
 book-to-bills
 arnc
-rourke
 asmussen
 annuitize
 non-compete
@@ -81159,7 +81155,6 @@ non-wovens
 foam-based
 uscr
 kunz
-'where
 42.0
 741.4
 322.7
@@ -81167,7 +81162,6 @@ amarillo
 gravel
 wheresmyconcrete
 in-markets
-'we
 usemyconcrete
 medpor
 blurriness
@@ -81758,7 +81752,7 @@ industry-platform
 366.4
 295.6
 optioning
-you've…
+ve…
 unpresendented
 rebuilders
 rollup
@@ -82747,7 +82741,6 @@ invulnerable
 seeping
 unsee
 e-
-'wow
 fasttrack
 insperity
 sarvadi
@@ -83357,7 +83350,7 @@ garyville
 well-situated
 dusted
 rlfd
-'21/'22
+21/
 andeavor
 midcon
 mandan
@@ -84589,7 +84582,6 @@ kristopher
 ratings-wise
 unpresented
 synch
-l'air
 aiquf
 aude
 benoît
@@ -85022,7 +85014,6 @@ uni
 enticement
 haaken
 baeshiqa
-ula
 tambar
 kurdis
 triassic
@@ -85526,7 +85517,7 @@ refactor
 cannon-brookes
 c-cap
 eoa
-we'll…
+ll…
 d.j.
 spunk
 evangelist
@@ -90699,9 +90690,8 @@ to-ate
 utc
 rate-regulated
 kalaeloa
-o'ahu
 kapalua
-ka'anapali
+anapali
 verdes
 psps
 wram/mcba
@@ -91210,7 +91200,7 @@ like-on-like
 tangible/intangible
 €1.36
 cice
-l'archipel
+archipel
 discussable
 €22.1
 cofiroute
@@ -93133,6 +93123,7 @@ ex-transitional
 12.29
 23.29
 paco
+loghlen
 vidacaixa
 0.751
 mybox
@@ -93355,7 +93346,7 @@ re-strategize
 whacked
 been-
 rudof
-that's-
+s-
 well-wishes
 dril-quip
 drq
@@ -93706,6 +93697,7 @@ pre-determined
 6700
 rtep
 link-up
+we're…
 bec
 dis-synergy
 nwl
@@ -94269,7 +94261,6 @@ demchyk
 ladany
 santarellis
 finbar
-o'herlihy
 www.glpropinc.com
 desiree
 scenario-planned
@@ -95444,7 +95435,6 @@ clumping
 absorbx
 wetness
 vitafusion
-l'il
 critter
 femfresh
 kaboom
@@ -96499,7 +96489,6 @@ frontloaded
 ecd
 quarter-only
 cpi-linked
-'improvement
 requel
 nia
 dtas
@@ -97464,7 +97453,6 @@ shack-by-shack
 95-degree
 suburbans
 htgc
-hara
 bluestein
 htgc.com
 510.9
@@ -98029,6 +98017,7 @@ road-shows
 bartolomeo
 pires
 spinelli
+d'ambrosio
 quental
 vale.com
 brumadinho
@@ -99345,7 +99334,6 @@ multi-prong
 overlay-controlled
 amaimo
 jocelyn
-dall'antonia
 officer-fortisbc
 apsey
 officer-itc
@@ -99368,6 +99356,7 @@ fortisalberta
 perceptively
 fortistci
 anti-hybrid
+dall'antonia
 tvr
 cpcn
 non-roe
@@ -99795,7 +99784,6 @@ unbutton
 pre-dated
 re-characterization
 tell-tell
-'bond
 re-slated
 reflating
 xylem
@@ -101873,7 +101861,7 @@ sibold
 genzyme
 boutherin
 sanofi.com
-d'enregistrement
+enregistrement
 universel
 in-
 brain-
@@ -101891,8 +101879,6 @@ quadrivalent
 aprovel
 lovenox
 simdex
-'859
-'168
 bivv001
 anti-rsv
 immunoinflammation
@@ -101979,7 +101965,6 @@ highwoods
 hiw
 maiorana
 klinck
-leary
 mulhern
 highwoods.com
 821,000
@@ -102279,7 +102264,6 @@ cad64
 cad0.88
 solei
 riff
-p'tite
 pof
 highness
 usd100
@@ -102494,7 +102478,6 @@ burkhalter
 teague
 chovanec
 secrest
-d'anna
 promix
 co-loading
 marquard
@@ -102815,8 +102798,9 @@ can—all
 spaghettios
 capacity-driven
 tele-tasting
-snyder's-lance
+s-lance
 80-basis
+snyder's-lance
 pepperidge
 campbellsoupcompany.com
 quick-scratch
@@ -103226,7 +103210,6 @@ aegean
 giresun
 luoyang
 windham
-'count
 special-item
 baymont
 negative-54
@@ -105195,9 +105178,9 @@ go-through
 methane-based
 off-roader
 roadster
+k.r.
 bunk
 non-interrupted
-k.r.
 lipostructure
 unconscionable
 gasping
@@ -105219,7 +105202,7 @@ procedure-sensitive
 castlight
 cslt
 maeve
-o'meara
+meara
 bondurant
 mid-to-late-stage
 book-of-business
@@ -105629,8 +105612,6 @@ non-paint
 repainting
 goat
 chloride-based
-diy'ers
-diy'er
 bang-up
 boltz
 do-it-yourselfer
@@ -105983,7 +105964,6 @@ rasm
 rasms
 vto
 a190s
-'back
 co-automation
 proverbially
 cas2
@@ -106588,15 +106568,17 @@ tst
 ustl
 –besides
 canpar/loomis
-'you
+capex.
 tca
 ,98
 consummative
+something.
 cfi
-'alain
 loomis/canpar
 canpar
+me.
 e-comments
+margin.
 minus-15
 minus-5
 minus-10
@@ -106607,14 +106589,18 @@ beavex
 kal
 nff
 minus-17
-'listen
+dividend.
+customers.
 kohut
 85-15.
 abbot
+rates.
+up.
 overbooked
 mcgonigal
 hashie
 woodstock
+going.
 -some
 greenery
 slone
@@ -107120,7 +107106,7 @@ moxcey
 hunn
 crisci
 blanton
-o'callaghan
+callaghan
 deps
 ilf
 constructconnect
@@ -108364,7 +108350,7 @@ guiony
 hollis
 charmaine
 château
-d'esclans
+esclans
 €1.99
 €754
 rosé
@@ -108532,6 +108518,7 @@ donanemab
 solanezumab
 lebrikizumab
 dermira
+'30
 dlmaf
 rossy
 dollarama.com
@@ -108915,7 +108902,6 @@ covid-19…
 tirba
 –all
 nibbling
-didn't…
 ilumetri…
 ciclopoli
 agppf
@@ -109675,7 +109661,6 @@ same-store-sales
 non-member
 300.8
 298.9
-'if
 shearling
 fur-lined
 hibbett
@@ -109843,6 +109828,7 @@ outclassing
 194.1
 trtn
 sondey
+o'callaghan
 tied-up
 untangled
 28.70
@@ -110904,7 +110890,7 @@ self-healthy
 umpqua
 umpq
 02:00
-o'haver
+haver
 farnsworth
 nixon
 shotwell
@@ -112772,6 +112758,7 @@ radiography
 intraoral
 pultegroup
 zeumer
+shaughnessy
 ossowski
 pultegroup.com
 quick-move-in
@@ -113023,6 +113010,7 @@ gwendolyn
 schreffler
 hayley
 gwen
+'34
 technologic
 152.4
 dual-energy
@@ -113144,8 +113132,6 @@ ctxs
 tsuchiguchi
 henshall
 shenkman
-'90
-'98
 metaframe
 consumption…
 netscaler
@@ -114471,7 +114457,6 @@ transfund
 equitized
 cobiz
 52.20
-wouldn't…
 put…
 …more
 918-595-3030
@@ -115105,7 +115090,6 @@ hand-curated
 'beauty
 'lifestyle
 'news
-'try-on
 privacy-safe
 mobile-
 well-
@@ -115436,7 +115420,6 @@ ostrand
 ranjf
 zomer
 opportunity-driven
-'safely
 risesmart
 ribuot
 unhurt
@@ -115844,7 +115827,7 @@ pooran
 apsm
 3.945
 raise-the-bar
-2008-'09
+2008-
 new-to-industry
 pprqf
 baughan
@@ -116555,6 +116538,7 @@ micro-transit
 upfitter
 olblack
 cbwbf
+souza
 cwb
 t.e
 frazer
@@ -116961,7 +116945,6 @@ inter-units
 ilene
 fiszel
 bieler
-o'hanley
 aboaf
 investors.statestreet.com
 crd
@@ -118346,7 +118329,6 @@ minus-60
 h119
 qv
 non-default
-q1'19
 lgb
 make-to-market
 per-covid-19
@@ -118366,7 +118348,7 @@ optumcare
 optuminsights
 give-backs
 triple-a
-'caid
+caid
 7/1/21
 cianfrocco
 anti-rebate
@@ -118603,7 +118585,7 @@ trading-related
 debt-valuation
 gsib
 markmason
-matto'connor
+matto
 ncls
 ncl
 erikanajarian
@@ -118709,7 +118691,6 @@ dispersing
 bond-by-bond
 re-prices
 pdos
-doesn't…
 schlangenstein
 gilbertson
 ir.delta.com
@@ -119269,12 +119250,12 @@ knowland
 sak
 roscoe
 4.46x
-'no
 sbic-license
 227.8
 minus-26
 minus-22
 sub-2.5
+down.
 scepter
 weca
 goreact
@@ -119519,6 +119500,7 @@ trued-up
 message…
 vitamin-fortified
 stickering
+'wow
 dumbbell
 kettlebells
 bergh
@@ -119845,6 +119827,7 @@ omni-standpoint
 sneaker/trainer
 encrusted
 steelcase
+o'meara
 sylvester
 ir.steelcase.com
 community-minded
@@ -120231,13 +120214,13 @@ reshipping
 acasti
 acst
 botie
-d'alvise
+alvise
 groch
 boily
-alvise
 212-671-1020
 capre
 www.acastipharma.com
+d'alvise
 pre-randomization
 inexplicable
 misallocation
@@ -120383,7 +120366,6 @@ evora
 optiflow
 myairvo
 spiritual
-callaghan
 31th
 re-introduction
 conflated
@@ -120837,6 +120819,7 @@ milla
 knobe
 wolfeler
 shiver
+d'enregistrement
 malfunction
 gba-parkinson
 btki'168
@@ -121266,6 +121249,7 @@ beauty-to-go
 products-based
 glamlab
 bogus
+occitane
 elsskin
 kinship
 upcircle
@@ -121852,7 +121836,7 @@ cad3.20
 saint-eustache
 cad7.95
 cad7.14
-o'cannabiz
+cannabiz
 cad25,000
 cad0.3
 cad4.9
@@ -121885,7 +121869,6 @@ jabil.com
 fy20s
 jgp
 jjmd
-'21-
 misalign
 kmx
 frole
@@ -122138,7 +122121,7 @@ olev
 cwip
 buy-ins
 £6billion
-'19/
+19/
 gabriella
 marpril
 mysole
@@ -122548,7 +122531,6 @@ non-flower
 labatt
 girma
 digitech
-15/16
 0.906
 by…
 amthe
@@ -123135,7 +123117,6 @@ dgp
 870.
 rolltainer
 10-yard
-'08/09
 wolwf
 bardwell
 wooliesx
@@ -123286,7 +123267,6 @@ tastefully
 multi-outlet
 bww
 multi-outfit
-he'll…
 applebee's®
 relaters
 dimentionalizing
@@ -123850,7 +123830,6 @@ dis-establishment
 queenstown
 christchurch
 iafc
-fr'22
 dreamliners
 777-300s
 aucklanders
@@ -124473,7 +124452,6 @@ akitomo
 fukuyama
 araison
 minegishi
-'state
 jpy475.4
 jpy53.4
 jpy17.49
@@ -124658,7 +124636,6 @@ aukner
 thommesen
 wygpf
 sundram
-'delivering
 transfield
 3sun
 2109.
@@ -124779,6 +124756,7 @@ kalium
 capricorn
 sothank
 capacity-based
+fy'23
 0.7099
 fecs
 tullman
@@ -125065,7 +125043,6 @@ eatin
 natumi
 mccartney
 self-manufactured
-f'22
 sleepytime
 melatonin
 america-international
@@ -125638,7 +125615,6 @@ naylor
 spnoi
 segmentally
 rede
-d'or
 physiotherapy
 industry-mandated
 bunzl
@@ -125798,7 +125774,6 @@ hanli
 xudong
 86research
 ir.viomi.com
-'618
 21face
 large-screen
 music-related
@@ -126102,7 +126077,6 @@ snoop
 dogg
 cheech
 xelb
-d'loren
 haran
 burroughs
 www.xcelbrands.com
@@ -128008,6 +127982,7 @@ usd260
 flucelvax
 fluad
 liverpool
+'21/'22
 '22/'23
 65+
 qiv
@@ -128211,7 +128186,6 @@ magnis
 outshone
 field…
 gronbach
-neill
 starpower
 wolfspeed
 non-semiconductor
@@ -128975,7 +128949,6 @@ self-corrected
 qsfp
 beaven
 1,000-odd
-'footprint
 escondida
 11.82
 poitrel
@@ -129384,7 +129357,7 @@ eaglepointcreditcompany.com
 n-csr
 7.92
 decayed
-'19-2
+19-2
 cccs
 prebaked
 24.75…
@@ -130589,7 +130562,7 @@ ex-cfo
 sportium
 disclaimed
 thyme
-l'aubainerie
+aubainerie
 1,001
 7.05.
 307,000
@@ -131157,7 +131130,6 @@ hongrun
 tarim
 guohua
 jinjie
-zhong'an
 taiyuan
 jiaozuo
 wangzhou
@@ -131302,7 +131274,6 @@ search-oriented
 search-centric
 baijiahao
 questmobile
-'one
 non-ai
 speakers，
 business-facing
@@ -132004,7 +131975,6 @@ halal
 griller
 non-speculative
 sorgo
-souza
 eoi
 takeiti
 vesco
@@ -132373,7 +132343,7 @@ interventionists
 progenity
 director-westwicke
 stylli
-d'esparbes
+esparbes
 phan
 innatal
 avero
@@ -132645,6 +132615,7 @@ cryogen-only
 one-to-one-to-one
 cryogen-cooling
 phx
+d'amico
 gross/0.22
 gross/0.06
 gross/0.44
