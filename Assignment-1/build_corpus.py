@@ -50,6 +50,9 @@ def populate_dates(soup, data_dict):
             break
 
 
+participant_names = []
+
+
 def add_participant_category(pos, paragraphs, data_dict):
     new_added = 0
     for idx in range(pos + 1, len(paragraphs)):
@@ -57,29 +60,29 @@ def add_participant_category(pos, paragraphs, data_dict):
         try:
             # Check for elements inside span
             element = paragraphs[idx].contents[0].contents[0]
-            text = str(element)
+            text = paragraphs[idx].get_text()
         except AttributeError:
             text = paragraphs[idx].get_text()
         if text == " ":
             continue
         text = text.replace('–', '-')
         if '-' in text:
-            name = text.split('-')[0].strip()
-            if len(name) <= 100:
+            first_name = text.split(' - ')[0].strip()
+            name = text.strip()
+            if len(name) <= 200:
                 name = replace_unicode(name)
+                first_name = replace_unicode(first_name)
+                participant_names.append(first_name)
                 data_dict['Participants'].append(name)
                 new_added = new_added + 1
         else:
             break
     return new_added
 
-# To-do: Some files have nested tags for the category. Fix it
-
 
 def populate_participants(soup, data_dict):
 
     data_dict['Participants'] = []
-    # paragraphs = soup.find_all('p', {'class': 'p'})
     paragraphs = soup.find_all('p')
 
     # Mark the starting index for the next task
@@ -116,18 +119,27 @@ def populate_participants(soup, data_dict):
     return last_participant_pos
 
 
-def populate_presentations(start, soup, data_dict, counter):
+def populate_presentations(start, soup, data_dict, counter, participants):
     data_dict['Presentations'] = {}
     paragraphs = soup.find_all('p')
+
+    # Add anonymous names
+    participants.append('Operator')
+    participants.append('operator')
+    participants.append('Unidentified Analyst')
+    participants.append('Unidentified Company Representative')
 
     name = ''
     nested_name = ''
     taking_inline = True
     taking_nested = False
 
+    # print(participants)
+
     # Start from the ending of participants section (pointed by start)
     for idx in range(start + 1, len(paragraphs)):
         para = paragraphs[idx]
+        # print(para)
         # Filter start of QnA section
         if para.has_attr('id'):
             break
@@ -139,30 +151,30 @@ def populate_presentations(start, soup, data_dict, counter):
         try:
             # print(counter, para)
             element = para.contents[0].contents[0]
-            name = para.text
+            name = para.get_text().strip()
             if name == 'Question-and-Answer Session':
                 break
             try:
                 element = element.contents[0]
-                nested_name = str(element)
+                nested_name = para.get_text().strip()
                 nested_name = replace_unicode(nested_name)
                 taking_inline = False
                 taking_nested = True
-                if nested_name not in data_dict['Presentations'].keys():
+                if nested_name not in data_dict['Presentations'].keys() and nested_name in participants:
                     data_dict['Presentations'][nested_name] = []
             except AttributeError:
-                dialogue = para.contents[0].contents[0]
+                dialogue = para.get_text()
                 dialogue = replace_unicode(dialogue)
-                if nested_name != '' and dialogue != " " and taking_nested:
+                if nested_name != '' and dialogue != " " and taking_nested and nested_name in participants:
                     data_dict['Presentations'][nested_name].append(dialogue)
             name = replace_unicode(name)
-            if name not in data_dict['Presentations'].keys() and taking_inline:
+            if name not in data_dict['Presentations'].keys() and taking_inline and name in participants:
                 data_dict['Presentations'][name] = []
                 taking_nested = False
         except AttributeError:
-            dialogue = para.contents[0]
+            dialogue = para.get_text()
             dialogue = replace_unicode(dialogue)
-            if name != '' and dialogue != " " and taking_inline:
+            if name != '' and dialogue != " " and taking_inline and name in participants:
                 data_dict['Presentations'][name].append(dialogue)
         except IndexError:
             continue
@@ -180,10 +192,10 @@ def build_questionnaire(soup, data_dict, counter, participants):
 
     qNa_started = False
 
-    position = 0
+    position = 1
 
     for para in paragraphs:
-        name = para.get_text()
+        name = para.get_text().strip()
         if 'Question-and' in name or 'Question-' in name:
             qNa_started = True
             continue
@@ -200,8 +212,9 @@ def build_questionnaire(soup, data_dict, counter, participants):
             splits[1] = splits[1].strip()
             if splits[0] in participants:
                 person = splits[0]
-            elif splits[1] in participants:
+            if splits[1] in participants:
                 person = splits[1]
+
         person = person.strip()
         if person == "" or person == " " or name == None:
             continue
@@ -230,20 +243,72 @@ def build_questionnaire(soup, data_dict, counter, participants):
         position += 1
 
 
-def build_textCorpus(soup, ECTText):
-    text = soup.get_text()
-    ECTText.write(text)
-    ECTText.write('\n')
+def write_date(value):
+
+    text = 'Date\n'
+    text += value
+    text += '\n'
+    return text
+
+
+def write_participants(list_of_participants):
+
+    text = 'Participants\n'
+
+    for name in list_of_participants:
+        text += name
+        text += '\n'
+
+    return text
+
+
+def write_presentation(presentations):
+
+    text = 'Presentations\n'
+
+    for key, value in presentations.items():
+        text += key + '\n'
+        for dialogue in value:
+            text += dialogue + '\n'
+
+    return text
+
+
+def write_questionnaire(questionnaire):
+
+    text = 'Questionnaire\n'
+
+    for key, value in questionnaire.items():
+        text += str(key) + '\n'
+        speaker = value['Speaker']
+        text += speaker + '\n'
+        remark = value['Remark']
+        text += remark + '\n'
+
+    return text
+
+
+def build_textCorpus(soup, data_dict):
+
+    text = ''
+    if 'Date' in data_dict.keys():
+        text += write_date(data_dict['Date'])
+    text += write_participants(data_dict['Participants'])
+    text += write_presentation(data_dict['Presentations'])
+    text += write_questionnaire(data_dict['Questionnaire'])
+
+    return text
 
 
 def build_ECTNestedDict():
-
-    ECTText = open('ECTText.txt', 'w')
 
     iterations = 0
 
     if not os.path.exists('ECTNestedDict'):
         os.makedirs('ECTNestedDict')
+
+    if not os.path.exists('ECTText'):
+        os.makedirs('ECTText')
 
     for file in files:
         data_dict = {}
@@ -252,19 +317,27 @@ def build_ECTNestedDict():
         counter = re.match(r'[0-9]{1,4}', file).group(0)
         counter = (int)(counter)
 
-        build_textCorpus(soup, ECTText)
-        ECTText.close()
-        # populate_dates(soup, data_dict)
-        # last_participant_pos = populate_participants(soup, data_dict)
-        # populate_presentations(last_participant_pos, soup, data_dict, counter)
-        # participants = copy.deepcopy(data_dict['Participants'])
-        # build_questionnaire(soup, data_dict, counter, participants)
+        populate_dates(soup, data_dict)
+        last_participant_pos = populate_participants(soup, data_dict)
+        participants = copy.deepcopy(participant_names)
 
-        # out_file = os.path.join(
-        #     'ECTNestedDict', os.path.splitext(file)[0] + '.json')
+        populate_presentations(last_participant_pos, soup,
+                               data_dict, counter, participants)
+        build_questionnaire(soup, data_dict, counter, participants)
 
-        # with open(out_file, 'w') as outFile:
-        #     json.dump(data_dict, outFile)
+        text_file = build_textCorpus(soup, data_dict)
+
+        out_json_file = os.path.join(
+            'ECTNestedDict', os.path.splitext(file)[0] + '.json')
+
+        out_text_file = os.path.join(
+            'ECTText', os.path.splitext(file)[0] + '.txt')
+
+        with open(out_json_file, 'w') as outFile:
+            json.dump(data_dict, outFile)
+
+        with open(out_text_file, 'w') as outFile:
+            outFile.write(text_file)
 
         iterations = iterations + 1
         if DEBUG and iterations % 100 == 0:

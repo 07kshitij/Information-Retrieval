@@ -22,6 +22,7 @@ def precompute():
 
     return tokens_prefix, tokens_suffix
 
+
 def solve_prefix(query):
 
     left = 0
@@ -77,6 +78,7 @@ def solve_suffix(query):
 def intersect(a, b):
     return list(set(a).intersection(b))
 
+
 def get_postings(result):
 
     postings = []
@@ -86,6 +88,7 @@ def get_postings(result):
         postings.extend(posting)
 
     return postings
+
 
 def answer_queries():
     with open(query_file, 'r') as f:
