@@ -6,23 +6,30 @@ import string
 from bs4 import BeautifulSoup
 
 DATA_PATH = './data/'
+DEBUG = True
+
+''' Sorting function to sort input files in lexicographically increasing order '''
+
+
+def sortKey(s):
+    return int(s.split('-')[0])
+
 
 files = os.listdir(DATA_PATH)
-files.sort()
+files.sort(key=sortKey)
 total_files = len(files)
 
-DEBUG = True
+''' Replace some unicode characters with ASCII equivalent in the .json files '''
 
 
 def replace_unicode(response):
     response = re.sub(u"(\u2018|\u2019)", "'", response)
     response = re.sub(u"(\u2013|\u2014)", "-", response)
     response = re.sub(u"(\u2026)", "...", response)
-    response = re.sub(u"(\u00e4)", "a", response)
-    response = re.sub(u"(\u20ac)", "Euro ", response)
-    response = re.sub(u"(\u00e9)", "e", response)
-    response = re.sub(u"(\u00fc)", "u", response)
     return response
+
+
+''' Extracts the date mentioned in the html file using Regex matching '''
 
 
 def populate_dates(soup, data_dict):
@@ -50,7 +57,11 @@ def populate_dates(soup, data_dict):
             break
 
 
+# An auxiliary list which stores only the names of the participants \
+# Used for easy checking a participant while building Presentations and Questionnaire
 participant_names = []
+
+''' Extract the Participants from the paragraph elements containing the name '''
 
 
 def add_participant_category(pos, paragraphs, data_dict):
@@ -78,6 +89,9 @@ def add_participant_category(pos, paragraphs, data_dict):
         else:
             break
     return new_added
+
+
+''' Populate the list of participants belonging to different categories '''
 
 
 def populate_participants(soup, data_dict):
@@ -119,6 +133,9 @@ def populate_participants(soup, data_dict):
     return last_participant_pos
 
 
+''' Populate the Presentations key in the dictionary using the list of participants calculated previously '''
+
+
 def populate_presentations(start, soup, data_dict, counter, participants):
     data_dict['Presentations'] = {}
     paragraphs = soup.find_all('p')
@@ -134,22 +151,18 @@ def populate_presentations(start, soup, data_dict, counter, participants):
     taking_inline = True
     taking_nested = False
 
-    # print(participants)
-
     # Start from the ending of participants section (pointed by start)
     for idx in range(start + 1, len(paragraphs)):
         para = paragraphs[idx]
-        # print(para)
         # Filter start of QnA section
         if para.has_attr('id'):
             break
-        if para.text == 'Question-and-Answer Session':         # Filter start of QnA section
+        if para.get_text() == 'Question-and-Answer Session':         # Filter start of QnA section
             break
         if len(para.contents) < 1:                             # Filter tags like <p></p>
             continue
         # Check if the tag is a name or dialogue
         try:
-            # print(counter, para)
             element = para.contents[0].contents[0]
             name = para.get_text().strip()
             if name == 'Question-and-Answer Session':
@@ -178,6 +191,9 @@ def populate_presentations(start, soup, data_dict, counter, participants):
                 data_dict['Presentations'][name].append(dialogue)
         except IndexError:
             continue
+
+
+''' Build the Questionnaire key in the dictionary using the list of participants '''
 
 
 def build_questionnaire(soup, data_dict, counter, participants):
@@ -243,6 +259,9 @@ def build_questionnaire(soup, data_dict, counter, participants):
         position += 1
 
 
+''' Helper functions to write different keys of the Nested Dictionary to respective .txt files'''
+
+
 def write_date(value):
 
     text = 'Date\n'
@@ -288,6 +307,9 @@ def write_questionnaire(questionnaire):
     return text
 
 
+''' Wrapper function to write the Dictioary 'data_dict' to the corresponding .txt files '''
+
+
 def build_textCorpus(soup, data_dict):
 
     text = ''
@@ -300,9 +322,10 @@ def build_textCorpus(soup, data_dict):
     return text
 
 
-def build_ECTNestedDict():
+''' Driver function which builds the Nested Dictionary and ECTText file for each html file '''
 
-    iterations = 0
+
+def build_ECTNestedDict():
 
     if not os.path.exists('ECTNestedDict'):
         os.makedirs('ECTNestedDict')
@@ -310,10 +333,14 @@ def build_ECTNestedDict():
     if not os.path.exists('ECTText'):
         os.makedirs('ECTText')
 
+    file_num = 0
+
     for file in files:
         data_dict = {}
         abs_path = os.path.abspath(os.path.join(DATA_PATH, file))
         soup = BeautifulSoup(open(abs_path), "html.parser")
+
+        # Counter for debugging purposes
         counter = re.match(r'[0-9]{1,4}', file).group(0)
         counter = (int)(counter)
 
@@ -328,10 +355,10 @@ def build_ECTNestedDict():
         text_file = build_textCorpus(soup, data_dict)
 
         out_json_file = os.path.join(
-            'ECTNestedDict', os.path.splitext(file)[0] + '.json')
+            'ECTNestedDict', str(file_num) + '.json')
 
         out_text_file = os.path.join(
-            'ECTText', os.path.splitext(file)[0] + '.txt')
+            'ECTText', str(file_num) + '.txt')
 
         with open(out_json_file, 'w') as outFile:
             json.dump(data_dict, outFile)
@@ -339,13 +366,9 @@ def build_ECTNestedDict():
         with open(out_text_file, 'w') as outFile:
             outFile.write(text_file)
 
-        iterations = iterations + 1
-        if DEBUG and iterations % 100 == 0:
-            print('ECTNestedDict - Steps done: {}'.format(iterations))
-
-        # if DEBUG:
-        #     print(counter, data_dict)
-        # break
+        file_num = file_num + 1
+        if DEBUG and file_num % 100 == 0:
+            print('ECTNestedDict - Steps done: {}'.format(file_num))
 
 
 if __name__ == "__main__":

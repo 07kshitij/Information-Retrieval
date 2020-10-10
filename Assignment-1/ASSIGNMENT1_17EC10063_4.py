@@ -12,6 +12,8 @@ query_file = ''
 tokens_prefix = []
 tokens_suffix = []
 
+''' Precomputes the sorted list of tokens both for prefix and suffix matching '''
+
 
 def precompute():
     tokens_prefix = list(inverted_index.keys())
@@ -21,6 +23,9 @@ def precompute():
     tokens_suffix.sort()
 
     return tokens_prefix, tokens_suffix
+
+
+''' Returns the list of matching tokens which have 'query' as their prefix '''
 
 
 def solve_prefix(query):
@@ -49,6 +54,9 @@ def solve_prefix(query):
     return matchings
 
 
+''' Returns the list of matching tokens which have 'query' as their suffix '''
+
+
 def solve_suffix(query):
     left = 0
     right = len(tokens_suffix) - 1
@@ -75,12 +83,19 @@ def solve_suffix(query):
     return matchings
 
 
+''' Intersect the list of prefix and suffix tokens to return the common ones '''
+
+
 def intersect(a, b):
     return list(set(a).intersection(b))
 
-def write_answer(file, query, result):
 
-    file.write(query + ':')
+''' Output the answers (<docID, posID>) for the given 'matching' '''
+
+
+def write_answer(file, matching, result):
+
+    file.write(matching + ':')
     count = 0
     for post in result:
         file.write('<{},{}>'.format(post[0], post[1]))
@@ -90,19 +105,29 @@ def write_answer(file, query, result):
     return
 
 
-def get_postings(result, out_file):
+''' Prepares the results for all the matchings to the 'input_query' '''
+
+
+def get_postings(result, out_file, input_query):
 
     postings = []
 
     count = 0
     for key in result:
+        # handle cases like wo*ow which can match to wow
+        count += 1
+        if len(key) < len(input_query) - 1:
+            continue
         posting = inverted_index[key]
         posting.sort(key=lambda x: (x[0], x[1]))
         write_answer(out_file, key, posting)
-        count += 1
         if count != len(result):
-            out_file.write(';')
+            out_file.write('; ')
     return
+
+
+''' Driver function which takes computes the result for all the queries in the 'query_file' '''
+
 
 def answer_queries():
 
@@ -122,9 +147,10 @@ def answer_queries():
                 result_left = solve_prefix(left)
                 result_right = solve_suffix(right[::-1])
                 result = intersect(result_left, result_right)
-            get_postings(result, out_file)
+            get_postings(result, out_file, query)
             out_file.write('\n')
     out_file.close()
+
 
 if __name__ == "__main__":
 
