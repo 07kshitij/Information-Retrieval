@@ -3,10 +3,18 @@ import re
 import json
 import copy
 import string
+import time
 from bs4 import BeautifulSoup
 
-DATA_PATH = './data/'
-DEBUG = True
+DATA_PATH = './ECT/'
+DEBUG = False
+
+# Assign variables for keys to avoid hard-coding and possible bugs if any key is changed
+
+DATE = 'Date'
+PARTICIPANTS = 'Participants'
+PRESENTATION = 'Presentation'
+QUESTIONNAIRE = 'Questionnaire'
 
 ''' Sorting function to sort input files in lexicographically increasing order '''
 
@@ -50,8 +58,8 @@ def populate_dates(soup, data_dict):
                 result = re.search(pattern, para)
                 if result:
                     found = True
-                    data_dict['Date'] = result.group(0)
-                    assert data_dict['Date'] in para
+                    data_dict[DATE] = result.group(0)
+                    assert data_dict[DATE] in para
                     break
         if found:
             break
@@ -84,7 +92,7 @@ def add_participant_category(pos, paragraphs, data_dict):
                 name = replace_unicode(name)
                 first_name = replace_unicode(first_name)
                 participant_names.append(first_name)
-                data_dict['Participants'].append(name)
+                data_dict[PARTICIPANTS].append(name)
                 new_added = new_added + 1
         else:
             break
@@ -96,7 +104,7 @@ def add_participant_category(pos, paragraphs, data_dict):
 
 def populate_participants(soup, data_dict):
 
-    data_dict['Participants'] = []
+    data_dict[PARTICIPANTS] = []
     paragraphs = soup.find_all('p')
 
     # Mark the starting index for the next task
@@ -137,7 +145,7 @@ def populate_participants(soup, data_dict):
 
 
 def populate_presentations(start, soup, data_dict, counter, participants):
-    data_dict['Presentations'] = {}
+    data_dict[PRESENTATION] = {}
     paragraphs = soup.find_all('p')
 
     # Add anonymous names
@@ -173,22 +181,22 @@ def populate_presentations(start, soup, data_dict, counter, participants):
                 nested_name = replace_unicode(nested_name)
                 taking_inline = False
                 taking_nested = True
-                if nested_name not in data_dict['Presentations'].keys() and nested_name in participants:
-                    data_dict['Presentations'][nested_name] = []
+                if nested_name not in data_dict[PRESENTATION].keys() and nested_name in participants:
+                    data_dict[PRESENTATION][nested_name] = []
             except AttributeError:
                 dialogue = para.get_text()
                 dialogue = replace_unicode(dialogue)
                 if nested_name != '' and dialogue != " " and taking_nested and nested_name in participants:
-                    data_dict['Presentations'][nested_name].append(dialogue)
+                    data_dict[PRESENTATION][nested_name].append(dialogue)
             name = replace_unicode(name)
-            if name not in data_dict['Presentations'].keys() and taking_inline and name in participants:
-                data_dict['Presentations'][name] = []
+            if name not in data_dict[PRESENTATION].keys() and taking_inline and name in participants:
+                data_dict[PRESENTATION][name] = []
                 taking_nested = False
         except AttributeError:
             dialogue = para.get_text()
             dialogue = replace_unicode(dialogue)
             if name != '' and dialogue != " " and taking_inline and name in participants:
-                data_dict['Presentations'][name].append(dialogue)
+                data_dict[PRESENTATION][name].append(dialogue)
         except IndexError:
             continue
 
@@ -197,7 +205,7 @@ def populate_presentations(start, soup, data_dict, counter, participants):
 
 
 def build_questionnaire(soup, data_dict, counter, participants):
-    data_dict['Questionnaire'] = {}
+    data_dict[QUESTIONNAIRE] = {}
     paragraphs = soup.find_all('strong')
 
     # Add anonymous names
@@ -251,7 +259,7 @@ def build_questionnaire(soup, data_dict, counter, participants):
         person = replace_unicode(person)
         response = replace_unicode(response)
 
-        data_dict['Questionnaire'][position] = {
+        data_dict[QUESTIONNAIRE][position] = {
             'Speaker': person,
             'Remark': response
         }
@@ -264,7 +272,7 @@ def build_questionnaire(soup, data_dict, counter, participants):
 
 def write_date(value):
 
-    text = 'Date\n'
+    text = DATE + '\n'
     text += value
     text += '\n'
     return text
@@ -272,7 +280,7 @@ def write_date(value):
 
 def write_participants(list_of_participants):
 
-    text = 'Participants\n'
+    text = PARTICIPANTS + '\n'
 
     for name in list_of_participants:
         text += name
@@ -283,7 +291,7 @@ def write_participants(list_of_participants):
 
 def write_presentation(presentations):
 
-    text = 'Presentations\n'
+    text = PRESENTATION + '\n'
 
     for key, value in presentations.items():
         text += key + '\n'
@@ -295,7 +303,7 @@ def write_presentation(presentations):
 
 def write_questionnaire(questionnaire):
 
-    text = 'Questionnaire\n'
+    text = QUESTIONNAIRE + '\n'
 
     for key, value in questionnaire.items():
         text += str(key) + '\n'
@@ -313,11 +321,11 @@ def write_questionnaire(questionnaire):
 def build_textCorpus(soup, data_dict):
 
     text = ''
-    if 'Date' in data_dict.keys():
-        text += write_date(data_dict['Date'])
-    text += write_participants(data_dict['Participants'])
-    text += write_presentation(data_dict['Presentations'])
-    text += write_questionnaire(data_dict['Questionnaire'])
+    if DATE in data_dict.keys():
+        text += write_date(data_dict[DATE])
+    text += write_participants(data_dict[PARTICIPANTS])
+    text += write_presentation(data_dict[PRESENTATION])
+    text += write_questionnaire(data_dict[QUESTIONNAIRE])
 
     return text
 
@@ -372,4 +380,7 @@ def build_ECTNestedDict():
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     build_ECTNestedDict()
+    if DEBUG:
+        print("--- %s seconds ---" % (time.time() - start_time))

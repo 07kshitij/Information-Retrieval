@@ -113,16 +113,16 @@ def get_postings(result, out_file, input_query):
     postings = []
 
     count = 0
+    result.sort()
     for key in result:
         # handle cases like wo*ow which can match to wow
-        count += 1
-        if len(key) < len(input_query) - 1:
-            continue
-        posting = inverted_index[key]
-        posting.sort(key=lambda x: (x[0], x[1]))
-        write_answer(out_file, key, posting)
-        if count != len(result):
-            out_file.write('; ')
+        if len(key) >= len(input_query) - 1:
+            if count:
+                out_file.write('; ')
+            posting = inverted_index[key]
+            posting.sort(key=lambda x: (x[0], x[1]))
+            write_answer(out_file, key, posting)
+            count += 1
     return
 
 
