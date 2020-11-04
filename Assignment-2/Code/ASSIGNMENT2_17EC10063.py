@@ -1,23 +1,24 @@
 import os
 import sys
-import re
-import json
 import copy
 import string
 import time
-import pickle5 as pickle
+try:
+    import pickle5 as pickle
+except:
+    import pickle
 import numpy as np
 from collections import OrderedDict
 from numpy import dot
 from numpy.linalg import norm
 from bs4 import BeautifulSoup
 from nltk.stem import WordNetLemmatizer
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, wordnet
 from nltk.tokenize import word_tokenize
 
-DATA_PATH = '../Dataset/'
-LEADERS_PATH = '../Leaders.pkl'
-STATIC_QUALITY_SCORE_PATH = '../StaticQualityScore.pkl'
+DATA_PATH = '../Dataset/Dataset/'
+LEADERS_PATH = '../Dataset/Leaders.pkl'
+STATIC_QUALITY_SCORE_PATH = '../Dataset/StaticQualityScore.pkl'
 CHAMPION_LIST_MAX_SIZE = 50
 QUERY_MAX_SIZE = 10
 DEBUG = False
@@ -95,7 +96,8 @@ def build_score_dict():
         file_contents = preprocess_text(file_contents)
 
         # Lemmatize and tokenize
-        for token in word_tokenize(file_contents):
+        tokens = word_tokenize(file_contents)
+        for token in tokens:
             if token not in stopwords:
                 token = lemmatizer.lemmatize(token)
                 try:
@@ -116,11 +118,9 @@ def build_score_dict():
         tf_idf[(token, docId)] = tf_td[(token, docId)] * idf_t[token]
 
         try:
-            InvertedPositionalIndex[(token, idf_t[token])].append(
-                (docId, tf_td[(token, docId)]))
+            InvertedPositionalIndex[(token, idf_t[token])].append((docId, tf_td[(token, docId)]))
         except KeyError:
-            InvertedPositionalIndex[(token, idf_t[token])] = [
-                (docId, tf_td[(token, docId)])]
+            InvertedPositionalIndex[(token, idf_t[token])] = [(docId, tf_td[(token, docId)])]
 
         try:
             ChampionListLocal[token].append(docId)
@@ -159,10 +159,9 @@ def write_answer(result_file, scores):
         result_file.write('<{},{}>'.format(docId, score))
         idx += 1
         if idx == len(scores):
-            delimiter = '\n'
+            delimiter = ''
         result_file.write(delimiter)
-    return
-
+    result_file.write('\n')
 
 ''' Returns the word vector for the document '''
 
@@ -186,7 +185,8 @@ def get_tf_idf_score(query_vector, N, result_file):
         doc_vector = get_doc_vector(docId)
         if norm(doc_vector) != 0 and norm(query_vector) != 0:
             score = dot(query_vector, doc_vector) / (norm_query * norm(doc_vector))
-            tf_idf_scores.append((docId, score))
+            if score:
+                tf_idf_scores.append((docId, score))
 
     write_answer(result_file, tf_idf_scores)
 
@@ -195,18 +195,20 @@ def get_tf_idf_score(query_vector, N, result_file):
 
 
 def get_local_champion_list_score(query_terms, query_vector, result_file):
-    cache = []
+    visited = []
     local_champion_list_scores = []
     norm_query = norm(query_vector)
     for word in query_terms:
+        if word not in ChampionListLocal.keys():
+            continue
         for docId in ChampionListLocal[word]:
-            if docId in cache:
-                continue
-            cache.append(docId)
-            doc_vector = get_doc_vector(docId)
-            if norm(doc_vector) != 0 and norm(query_vector) != 0:
-                score = dot(query_vector, doc_vector) / (norm_query * norm(doc_vector))
-                local_champion_list_scores.append((docId, score))
+            if docId not in visited:
+                visited.append(docId)
+                doc_vector = get_doc_vector(docId)
+                if norm(doc_vector) != 0 and norm(query_vector) != 0:
+                    score = dot(query_vector, doc_vector) / (norm_query * norm(doc_vector))
+                    if score:
+                        local_champion_list_scores.append((docId, score))
 
     write_answer(result_file, local_champion_list_scores)
 
@@ -215,19 +217,21 @@ def get_local_champion_list_score(query_terms, query_vector, result_file):
 
 
 def get_global_champion_list_score(query_terms, query_vector, result_file):
-    cache = []
+    visited = []
     global_champion_list_scores = []
     norm_query = norm(query_vector)
 
     for word in query_terms:
+        if word not in ChampionListGlobal.keys():
+            continue
         for docId in ChampionListGlobal[word]:
-            if docId in cache:
-                continue
-            cache.append(docId)
-            doc_vector = get_doc_vector(docId)
-            if norm(doc_vector) != 0 and norm(query_vector) != 0:
-                score = dot(query_vector, doc_vector) / (norm_query * norm(doc_vector))
-                global_champion_list_scores.append((docId, score))
+            if docId not in visited:
+                visited.append(docId)
+                doc_vector = get_doc_vector(docId)
+                if norm(doc_vector) != 0 and norm(query_vector) != 0:
+                    score = dot(query_vector, doc_vector) / (norm_query * norm(doc_vector))
+                    if score:
+                        global_champion_list_scores.append((docId, score))
 
     write_answer(result_file, global_champion_list_scores)
 
@@ -247,20 +251,22 @@ def get_cluster_pruning_score(query_vector, result_file):
 
     cluster_pruning_scores = sorted(
         cluster_pruning_scores, key=lambda x: x[1], reverse=True)
-    best_leader = cluster_pruning_scores[0][0]
-    leader_score = cluster_pruning_scores[0]
 
-    cluster_pruning_scores = []
-    cluster_pruning_scores.append(leader_score)
+    if len(cluster_pruning_scores):
+        best_leader = cluster_pruning_scores[0][0]
+        leader_score = cluster_pruning_scores[0]
 
-    for follower in Followers_List[best_leader]:
-        if norm(followers_vector[follower]) and norm_query:
-            score = dot(query_vector, followers_vector[follower]) / (norm_query * norm(followers_vector[follower]))
-            cluster_pruning_scores.append((follower, score))
+        cluster_pruning_scores = []
+        cluster_pruning_scores.append(leader_score)
+
+        for follower in Followers_List[best_leader]:
+            if norm(followers_vector[follower]) and norm_query:
+                score = dot(query_vector, followers_vector[follower]) / (norm_query * norm(followers_vector[follower]))
+                if score:
+                    cluster_pruning_scores.append((follower, score))
 
     write_answer(result_file, cluster_pruning_scores)
 
-    result_file.write('\n')
 
 
 ''' Cluster Pruning - Computes the list of followers and prepares the document vectors '''
@@ -292,18 +298,18 @@ def cluster_pruning(N):
 
             if norm_follower:
                 max_score = 0
-                L = None
+                best_leader = None
                 for leader in Leaders_List:
                     if norm_leader[leader]:
                         score = dot(
                             followers_vector[docId], leaders_vector[leader]) / (norm_follower * norm_leader[leader])
                         if score > max_score:
                             max_score = score
-                            L = leader
+                            best_leader = leader
                 try:
-                    Followers_List[L].append(docId)
+                    Followers_List[best_leader].append(docId)
                 except KeyError:
-                    Followers_List[L] = [docId]
+                    Followers_List[best_leader] = [docId]
 
 
 ''' Computes the 4 required scores for queries in the given query_file '''
@@ -316,7 +322,8 @@ def answer_query(query_file, N):
     with open(query_file, 'r') as f:
         queries = f.readlines()
         for query in queries:
-            original_query = copy.deepcopy(query)
+            original_query = copy.deepcopy(query).replace('\n', '')
+
             result_file.write(original_query + '\n')
 
             query = preprocess_text(query)
@@ -343,6 +350,9 @@ def answer_query(query_file, N):
             get_global_champion_list_score(
                 query_terms, query_vector, result_file)
             get_cluster_pruning_score(query_vector, result_file)
+        
+            if query != queries[-1]:
+                result_file.write('\n')
 
     result_file.close()
 
