@@ -88,7 +88,7 @@ def build_score_dict():
 
         counter += 1
         file_path = os.path.abspath(os.path.join(DATA_PATH, file_name))
-        soup = BeautifulSoup(open(file_path), "html.parser")
+        soup = BeautifulSoup(open(file_path, "r", encoding='utf-8'), "html.parser")
 
         docId = int(file_name.replace('.html', ''))
 
@@ -257,7 +257,8 @@ def get_cluster_pruning_score(query_vector, result_file):
         leader_score = cluster_pruning_scores[0]
 
         cluster_pruning_scores = []
-        cluster_pruning_scores.append(leader_score)
+        if leader_score[1]:
+            cluster_pruning_scores.append(leader_score)
 
         for follower in Followers_List[best_leader]:
             if norm(followers_vector[follower]) and norm_query:
@@ -317,11 +318,16 @@ def cluster_pruning(N):
 
 def answer_query(query_file, N):
 
-    result_file = open('RESULTS2_17EC10063.txt', 'w')
+    result_file = open('RESULTS2_17EC10063.txt', 'w', encoding='utf-8')
 
-    with open(query_file, 'r') as f:
+    counter = 0
+    with open(query_file, 'r', encoding='utf-8') as f:
         queries = f.readlines()
         for query in queries:
+            counter += 1
+
+            if len(query) == 0 or len(query.strip()) == 0:
+                continue
             original_query = copy.deepcopy(query).replace('\n', '')
 
             result_file.write(original_query + '\n')
@@ -351,7 +357,7 @@ def answer_query(query_file, N):
                 query_terms, query_vector, result_file)
             get_cluster_pruning_score(query_vector, result_file)
         
-            if query != queries[-1]:
+            if counter != len(queries):
                 result_file.write('\n')
 
     result_file.close()
