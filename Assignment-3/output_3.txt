@@ -1,2 +1,2 @@
 NumFeature 1 10 50
-KNeighborsClassifier 0.948373 0.964035 0.964069
+KNeighborsClassifier 0.970735 0.966267 0.961841
