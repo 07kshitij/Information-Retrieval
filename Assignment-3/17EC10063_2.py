@@ -1,4 +1,5 @@
-import sys, os
+import sys
+import os
 import numpy as np
 from string import punctuation
 from nltk.tokenize import word_tokenize
@@ -27,6 +28,10 @@ class Rocchio_classifier:
         self.feature_idx_map = {}
         self.mean_c1 = []
         self.mean_c2 = []
+        self.X_train = []
+        self.y_train = []
+        self.X_test = []
+        self.y_test = []
 
     """ Maps features (tokens) to integers """
 
@@ -38,10 +43,6 @@ class Rocchio_classifier:
 
     def prepare_count_matrix(self):
         classes = os.listdir(self.data_path)
-        self.X_train = []
-        self.y_train = []
-        self.X_test = []
-        self.y_test = []
         for className in classes:
             class_path = os.path.join(self.data_path, className)
             if className == "class1" or className == "class2":
@@ -135,7 +136,8 @@ class Rocchio_classifier:
     @staticmethod
     def process_data(data_path):
         files = os.listdir(data_path)
-        features = set()
+        features = []
+        cache = {}
         files.sort(key=lambda x: int(x))
         for file_ in files:
             text = open(os.path.join(data_path, file_), errors="replace").read()
@@ -143,12 +145,13 @@ class Rocchio_classifier:
             for _ in punctuation:
                 text = text.replace(_, " ")
             text = text.replace("  ", " ")
-            tokens = word_tokenize(text)
-            for token in tokens:
+            for token in word_tokenize(text):
                 if token not in stopwords:
                     token = lemmatizer.lemmatize(token)
-                    features.add(token)
-        return list(features)
+                    if token not in cache.keys():
+                        features.append(token)
+                        cache[token] = 1
+        return features
 
     """ Returns Euclidean distance between two doc vectors a and b """
 
@@ -158,10 +161,6 @@ class Rocchio_classifier:
     """ Runs the Rocchio classifier for different values of b """
 
     def run_Rocchio(self, b, out_file):
-
-        if DEBUG:
-            print(self.mean_c1)
-            print(self.mean_c2)
 
         results = []
 
@@ -175,28 +174,28 @@ class Rocchio_classifier:
                 else:
                     y_predict.append(2)
 
-            score = f1_score(self.y_test, y_predict)
+            score = f1_score(self.y_test, y_predict, average="macro")
             results.append(score)
             if DEBUG:
                 print("b = {}, f1_score = {}".format(b_, score))
 
         result_file = open(out_file, "w", encoding="utf-8")
-        result_file.write("NumFeature")
+        result_file.write("b       ")
 
         for b_ in b:
-            result_file.write(" {}".format(b_))
+            result_file.write("{}".format(b_))
         result_file.write("\n")
 
         result_file.write("Rocchio")
         for result in results:
-            result_file.write(" {}".format(round(result, 6)))
+            result_file.write(" {0:.6f}".format(result))
 
         result_file.close()
 
 
 if __name__ == "__main__":
     data_path, out_file = sys.argv[1], sys.argv[2]
-    b = [0, 0.01, 0.05, 0.1]
+    b = [0]
     Rocchio = Rocchio_classifier(data_path, out_file)
     Rocchio.read_dataset()
     Rocchio.prepare_feature_map()

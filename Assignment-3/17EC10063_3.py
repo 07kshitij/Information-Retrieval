@@ -1,4 +1,5 @@
-import sys, os
+import sys
+import os
 import numpy as np
 from string import punctuation
 from nltk.tokenize import word_tokenize
@@ -26,6 +27,10 @@ class kNN_classifier:
         self.out_file = out_file
         self.tokens = []
         self.feature_idx_map = {}
+        self.X_train = []
+        self.y_train = []
+        self.X_test = []
+        self.y_test = []
 
     """ Maps features (tokens) to integers """
 
@@ -37,10 +42,6 @@ class kNN_classifier:
 
     def prepare_count_matrix(self):
         classes = os.listdir(self.data_path)
-        self.X_train = []
-        self.y_train = []
-        self.X_test = []
-        self.y_test = []
         for className in classes:
             class_path = os.path.join(self.data_path, className)
             if className == "class1" or className == "class2":
@@ -119,7 +120,8 @@ class kNN_classifier:
     @staticmethod
     def process_data(data_path):
         files = os.listdir(data_path)
-        features = set()
+        features = []
+        cache = {}
         files.sort(key=lambda x: int(x))
         for file_ in files:
             text = open(os.path.join(data_path, file_), errors="replace").read()
@@ -127,12 +129,13 @@ class kNN_classifier:
             for _ in punctuation:
                 text = text.replace(_, " ")
             text = text.replace("  ", " ")
-            tokens = word_tokenize(text)
-            for token in tokens:
+            for token in word_tokenize(text):
                 if token not in stopwords:
                     token = lemmatizer.lemmatize(token)
-                    features.add(token)
-        return list(features)
+                    if token not in cache.keys():
+                        features.append(token)
+                        cache[token] = 1
+        return features
 
     """ Computes Inner product of two vectors x and y """
 
@@ -149,21 +152,21 @@ class kNN_classifier:
             kNN = KNeighborsClassifier(n_neighbors=k, metric=self.inner_product)
             kNN.fit(self.X_train, self.y_train)
             y_predict = kNN.predict(self.X_test)
-            score = f1_score(self.y_test, y_predict)
+            score = f1_score(self.y_test, y_predict, average="macro")
             results.append(score)
             if DEBUG:
                 print("k = {}, f1_score = {}".format(k, score))
 
         result_file = open(out_file, "w", encoding="utf-8")
-        result_file.write("NumFeature")
+        result_file.write("k   ")
 
         for k in K:
-            result_file.write(" {}".format(k))
+            result_file.write("{}        ".format(k))
         result_file.write("\n")
 
         result_file.write("kNN")
         for result in results:
-            result_file.write(" {}".format(round(result, 6)))
+            result_file.write(" {0:.6f}".format(result))
 
 
 if __name__ == "__main__":

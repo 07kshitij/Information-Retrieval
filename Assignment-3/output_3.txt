@@ -1,2 +1,2 @@
-NumFeature 1 10 50
-KNeighborsClassifier 0.970735 0.966267 0.961841
+k   1        10        50        
+kNN 0.970735 0.966267 0.961841

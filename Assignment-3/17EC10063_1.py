@@ -1,12 +1,13 @@
-import sys, os
-import numpy as np
-from string import punctuation
+import sys
+import os
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn.feature_selection import mutual_info_classif, SelectKBest
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
-from copy import deepcopy
+
+import numpy as np
+from string import punctuation
 from sklearn.metrics import f1_score
 
 stopwords = stopwords.words("english")
@@ -26,15 +27,15 @@ class Naive_Bayes:
         self.out_file = out_file
         self.tokens = []
         self.feature_idx_map = {}
+        self.X_train = []
+        self.y_train = []
+        self.X_test = []
+        self.y_test = []
 
     """ Computes the feature matrix of size (n_samples, n_features) """
 
     def generate_feature_matrix(self):
         classes = os.listdir(self.data_path)
-        self.X_train = []
-        self.y_train = []
-        self.X_test = []
-        self.y_test = []
         for className in classes:
             class_path = os.path.join(self.data_path, className)
             if className == "class1" or className == "class2":
@@ -53,8 +54,7 @@ class Naive_Bayes:
                         for _ in punctuation:
                             text = text.replace(_, " ")
                         text = text.replace("  ", " ")
-                        tokens = word_tokenize(text)
-                        for token in tokens:
+                        for token in word_tokenize(text):
                             if token not in stopwords:
                                 token = lemmatizer.lemmatize(token)
                                 try:
@@ -114,7 +114,8 @@ class Naive_Bayes:
     @staticmethod
     def process_data(data_path):
         files = os.listdir(data_path)
-        features = set()
+        features = []
+        cache = {}
         files.sort(key=lambda x: int(x))
         for file_ in files:
             text = open(os.path.join(data_path, file_), errors="replace").read()
@@ -122,12 +123,13 @@ class Naive_Bayes:
             for _ in punctuation:
                 text = text.replace(_, " ")
             text = text.replace("  ", " ")
-            tokens = word_tokenize(text)
-            for token in tokens:
+            for token in word_tokenize(text):
                 if token not in stopwords:
                     token = lemmatizer.lemmatize(token)
-                    features.add(token)
-        return list(features)
+                    if token not in cache.keys():
+                        features.append(token)
+                        cache[token] = 1
+        return features
 
     """ Fits MultinomialNB on X_train and predicts on X_test """
 
@@ -135,7 +137,7 @@ class Naive_Bayes:
         multinomialNB = MultinomialNB()
         multinomialNB.fit(X_train, self.y_train)
         y_predict = multinomialNB.predict(X_test)
-        score = f1_score(self.y_test, y_predict)
+        score = f1_score(self.y_test, y_predict, average="macro")
         return score
 
     """ Fits BernoulliNB on X_train and predicts on X_test """
@@ -144,7 +146,7 @@ class Naive_Bayes:
         bernoulliNB = BernoulliNB()
         bernoulliNB.fit(X_train, self.y_train)
         y_predict = bernoulliNB.predict(X_test)
-        score = f1_score(self.y_test, y_predict)
+        score = f1_score(self.y_test, y_predict, average="macro")
         return score
 
     """ Runs both NB classifiers on different values of top features """
@@ -166,25 +168,29 @@ class Naive_Bayes:
 
             multinomialNB_scores.append(multinomialNB_score)
             bernoulliNB_scores.append(bernoulliNB_score)
-            if DEBUG:
-                print("{} {} {}".format(count, multinomialNB_score, bernoulliNB_score))
+
+        self.write_answer(out_file, top_features_count, multinomialNB_scores, bernoulliNB_scores)
+
+    """ Writes answer to the output file """
+
+    def write_answer(self, out_file, top_features_count, multinomialNB_scores, bernoulliNB_scores):
 
         result_file = open(out_file, "w", encoding="utf-8")
 
-        result_file.write("NumFeature")
+        result_file.write("NumFeature    ")
 
         for count in top_features_count:
-            result_file.write(" {}".format(count))
+            result_file.write("{}        ".format(count))
 
         result_file.write("\nMultinomialNB")
 
         for pos in range(len(top_features_count)):
-            result_file.write(" {}".format(round(multinomialNB_scores[pos], 6)))
+            result_file.write(" {0:.6f}".format(multinomialNB_scores[pos]))
 
-        result_file.write("\nBernoulliNB")
+        result_file.write("\nBernoulliNB  ")
 
         for pos in range(len(top_features_count)):
-            result_file.write(" {}".format(round(bernoulliNB_scores[pos], 6)))
+            result_file.write(" {0:.6f}".format(bernoulliNB_scores[pos]))
 
         result_file.close()
 
