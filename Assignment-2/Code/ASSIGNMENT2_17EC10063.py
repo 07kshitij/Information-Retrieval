@@ -2,11 +2,7 @@ import os
 import sys
 import copy
 import string
-import time
-try:
-    import pickle5 as pickle
-except:
-    import pickle
+import pickle5 as pickle
 import numpy as np
 from collections import OrderedDict
 from numpy import dot
@@ -76,13 +72,13 @@ def preprocess_text(text):
 
 ''' Builds the InvertedPositionalIndex, ChampionListLocal & ChampionListGlobal dictionaries'''
 
+files = os.listdir(DATA_PATH)
+TOTAL_FILE_LEN = len(files)
 
 def build_score_dict():
 
-    files = os.listdir(DATA_PATH)
-    files.sort(key=sortKey)
-    N = len(files)
     counter = 0
+    files.sort(key=sortKey)
 
     for file_name in files:
 
@@ -113,7 +109,7 @@ def build_score_dict():
             print('Steps Done: {}'.format(counter))
 
     for token, docId in tf_td.keys():
-        idf_t[token] = np.log10(N / len(df_t[token]))
+        idf_t[token] = np.log10(TOTAL_FILE_LEN / len(df_t[token]))
         tf_td[(token, docId)] = np.log10(1 + tf_td[(token, docId)])
         tf_idf[(token, docId)] = tf_td[(token, docId)] * idf_t[token]
 
@@ -143,8 +139,6 @@ def build_score_dict():
 
     if DEBUG:
         print('Tokens: {}'.format(len(InvertedPositionalIndex.keys())))
-
-    return N
 
 
 ''' Writes the answer for a particular score type to the result file '''
@@ -177,11 +171,11 @@ def get_doc_vector(docId):
 ''' Computes the tf_idf score for the given query_vector '''
 
 
-def get_tf_idf_score(query_vector, N, result_file):
+def get_tf_idf_score(query_vector, TOTAL_FILE_LEN, result_file):
     tf_idf_scores = []
     norm_query = norm(query_vector)
 
-    for docId in range(N):
+    for docId in range(TOTAL_FILE_LEN):
         doc_vector = get_doc_vector(docId)
         if norm(doc_vector) != 0 and norm(query_vector) != 0:
             score = dot(query_vector, doc_vector) / (norm_query * norm(doc_vector))
@@ -273,7 +267,7 @@ def get_cluster_pruning_score(query_vector, result_file):
 ''' Cluster Pruning - Computes the list of followers and prepares the document vectors '''
 
 
-def cluster_pruning(N):
+def cluster_pruning(TOTAL_FILE_LEN):
 
     for leader in Leaders_List:
         vector = []
@@ -285,7 +279,7 @@ def cluster_pruning(N):
         leaders_vector[leader] = np.array(vector)
         norm_leader[leader] = norm(leaders_vector[leader])
 
-    for docId in range(N):
+    for docId in range(TOTAL_FILE_LEN):
         if docId not in Leaders_List:
             vector = []
             for word, idf in InvertedPositionalIndex.keys():
@@ -316,7 +310,7 @@ def cluster_pruning(N):
 ''' Computes the 4 required scores for queries in the given query_file '''
 
 
-def answer_query(query_file, N):
+def answer_query(query_file, TOTAL_FILE_LEN):
 
     result_file = open('RESULTS2_17EC10063.txt', 'w', encoding='utf-8')
 
@@ -350,7 +344,7 @@ def answer_query(query_file, N):
 
             query_vector = np.array(query_vector)
 
-            get_tf_idf_score(query_vector, N, result_file)
+            get_tf_idf_score(query_vector, TOTAL_FILE_LEN, result_file)
             get_local_champion_list_score(
                 query_terms, query_vector, result_file)
             get_global_champion_list_score(
@@ -364,14 +358,10 @@ def answer_query(query_file, N):
 
 
 if __name__ == "__main__":
-    start = time.time()
     Static_Quality_Score, Leaders_List = unpickle_dataset()
 
-    N = build_score_dict()
-    cluster_pruning(N)
+    build_score_dict()
+    cluster_pruning(TOTAL_FILE_LEN)
 
     query_file = sys.argv[1]
-    answer_query(query_file, N)
-
-    if DEBUG:
-        print('Time: {}'.format(time.time() - start))
+    answer_query(query_file, TOTAL_FILE_LEN)
